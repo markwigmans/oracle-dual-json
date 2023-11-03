@@ -1,4 +1,4 @@
-package com.btb.odj.model;
+package com.btb.odj.model.jpa;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.ManyToOne;

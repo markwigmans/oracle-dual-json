@@ -1,6 +1,8 @@
 services:
   dev-db:
-    image:  ghcr.io/markwigmans/23cfree
+    image: container-registry.oracle.com/database/free:latest
+    volumes:
+      - ./db/startup:/opt/oracle/scripts/startup
     environment:
       ORACLE_PWD: oracle
     ports:

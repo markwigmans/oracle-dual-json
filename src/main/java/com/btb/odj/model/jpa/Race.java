@@ -1,8 +1,6 @@
-package com.btb.odj.model;
+package com.btb.odj.model.jpa;
 
-import io.hypersistence.utils.hibernate.type.json.JsonType;
 import jakarta.persistence.Entity;
-import org.hibernate.annotations.Type;
 
 import java.util.Date;
 
@@ -21,6 +19,6 @@ public class Race extends AbstractEntity {
     private int laps;
     private Date raceDate;
 
-    @Type(JsonType.class)
-    private String podium;
+//    @Type(JsonType.class)
+//    private String podium;
 }

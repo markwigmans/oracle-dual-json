@@ -1,12 +1,12 @@
-package com.btb.odj.model;
+package com.btb.odj.model.jpa;
 
-import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
+import jakarta.persistence.MappedSuperclass;
 import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
 
-@Entity
+@MappedSuperclass
 @NoArgsConstructor
 public abstract class AbstractEntity implements Serializable {
 
