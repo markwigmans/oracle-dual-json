@@ -1,7 +1,9 @@
 package com.btb.odj.model.jpa;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.Entity;
 import jakarta.persistence.ManyToOne;
+import lombok.*;
 
 /**
  * CREATE TABLE driver
@@ -13,10 +15,18 @@ import jakarta.persistence.ManyToOne;
  *    CONSTRAINT driver_fk FOREIGN KEY(team_id) REFERENCES team(team_id));
  */
 @Entity
+@Builder
+@Data
+@EqualsAndHashCode(onlyExplicitlyIncluded = true, callSuper = true)
+@ToString(callSuper = true)
+@NoArgsConstructor
+@AllArgsConstructor
 public class Driver extends AbstractEntity {
 
+    private String name;
     private int points;
 
+    @JsonIgnore
     @ManyToOne
     private Team team;
 }
