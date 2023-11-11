@@ -17,7 +17,7 @@ import java.util.concurrent.CompletableFuture;
 public class DataController {
 
     private final DataService dataService;
-    
+
 
     @GetMapping("/{count}")
     public void createRaces(@PathVariable int count) {

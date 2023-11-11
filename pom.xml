@@ -19,6 +19,7 @@
         <java.version>17</java.version>
         <springdoc-openapi-starter.version>2.2.0</springdoc-openapi-starter.version>
         <javafaker.version>1.0.2</javafaker.version>
+        <uuid-creator.version>5.2.0</uuid-creator.version>
     </properties>
 
     <dependencies>
@@ -62,6 +63,12 @@
             <groupId>com.github.javafaker</groupId>
             <artifactId>javafaker</artifactId>
             <version>${javafaker.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.github.f4b6a3</groupId>
+            <artifactId>uuid-creator</artifactId>
+            <version>${uuid-creator.version}</version>
         </dependency>
 
         <dependency>

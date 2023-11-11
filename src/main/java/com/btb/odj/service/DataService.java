@@ -12,8 +12,7 @@ import org.springframework.stereotype.Component;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.TimeUnit;
+import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -30,6 +29,7 @@ public class DataService {
     private final TeamRepository teamRepository;
 
     private final AtomicBoolean running = new AtomicBoolean(false);
+    private final ExecutorService executor = Executors.newWorkStealingPool();
 
     public CompletableFuture<Void> createDataset(int size) {
         if (running.compareAndSet(false, true)) {
@@ -46,8 +46,15 @@ public class DataService {
     }
 
     void saveRaces(int races) {
-        final List<List<Integer>> groups = split(IntStream.range(0, races).boxed().toList(), 10);
-        groups.parallelStream().forEach(g -> raceRepository.saveAll(g.stream().map(t -> createRace()).toList()));
+        final List<List<Integer>> groups = split(IntStream.range(0, races).boxed().toList(), 50);
+        var array = groups.stream()
+                .map(g -> CompletableFuture.supplyAsync(() -> raceRepository.saveAll(g.stream().map(t -> createRace()).toList()), executor))
+                .toArray(CompletableFuture[]::new);
+        try {
+            CompletableFuture.allOf(array).get();
+        } catch (ExecutionException | InterruptedException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     Race createRace() {
@@ -59,13 +66,24 @@ public class DataService {
     }
 
     void saveTeams(int teams, int maxDrivers) {
-        final List<List<Integer>> groups = split(IntStream.range(0, teams).boxed().toList(), 5);
-        groups.parallelStream().forEach(g -> teamRepository.saveAll(g.stream().map(t -> createTeam(maxDrivers)).toList()));
+        final List<List<Integer>> groups = split(IntStream.range(0, teams).boxed().toList(), 50);
+        var array = groups.stream()
+                .map(g -> CompletableFuture.supplyAsync(() -> teamRepository.saveAll(g.stream().map(t -> createTeam(maxDrivers)).toList()), executor))
+                .toArray(CompletableFuture[]::new);
+        try {
+            CompletableFuture.allOf(array).get();
+        } catch (ExecutionException | InterruptedException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     Team createTeam(int maxDrivers) {
         Team team = Team.builder()
                 .name(faker.company().name())
+                .city(faker.address().city())
+                .streetName(faker.address().streetName())
+                .number(faker.address().buildingNumber())
+                .country(faker.address().country())
                 .points(faker.number().numberBetween(0, config.getTeamMaxPoints()))
                 .build();
         int drivers = faker.number().numberBetween((int) (maxDrivers * config.getMinDriversMultiplier()), maxDrivers);
@@ -74,14 +92,15 @@ public class DataService {
     }
 
     Driver createDriver(Team team) {
-         return Driver.builder()
+        return Driver.builder()
                 .name(faker.name().name())
+                .country(faker.address().country())
                 .points(faker.number().numberBetween(0, config.getDriverMaxPoints()))
                 .team(team)
                 .build();
     }
 
-    List<List<Integer>> split (List<Integer> list, int size) {
+    List<List<Integer>> split(List<Integer> list, int size) {
         final Map<Integer, List<Integer>> groups = list.stream().collect(Collectors.groupingBy(s -> (s - 1) / size));
         return new ArrayList<>(groups.values());
     }
