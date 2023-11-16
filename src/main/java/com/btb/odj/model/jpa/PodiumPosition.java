@@ -2,12 +2,9 @@ package com.btb.odj.model.jpa;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
-import jakarta.persistence.ManyToMany;
+import jakarta.persistence.ManyToOne;
 import lombok.*;
 import org.apache.commons.lang3.builder.ToStringExclude;
-
-import java.util.Date;
-import java.util.List;
 
 /**
  *
@@ -19,14 +16,15 @@ import java.util.List;
 @AllArgsConstructor
 @Setter
 @Getter
-public class Race extends AbstractEntity {
+public class PodiumPosition extends AbstractEntity {
 
-    private String name;
-    private String country;
-    private int laps;
-    private Date raceDate;
-
-    @ManyToMany(cascade = CascadeType.ALL)
+    @ManyToOne(cascade = CascadeType.ALL)
     @ToStringExclude
-    private List<PodiumPosition> podium;
+    private Race race;
+
+    @ManyToOne(cascade = CascadeType.ALL)
+    @ToStringExclude
+    private Driver driver;
+
+    private int position;
 }

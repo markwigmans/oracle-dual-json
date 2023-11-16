@@ -1,7 +1,7 @@
 package com.btb.odj.service;
 
 import com.btb.odj.config.DatasetConfig;
-import com.btb.odj.model.jpa.Driver;
+import com.btb.odj.model.jpa.PodiumPosition;
 import com.btb.odj.model.jpa.Race;
 import com.github.javafaker.Faker;
 import lombok.RequiredArgsConstructor;
@@ -11,6 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.IntStream;
 
 @Component
 @Transactional(readOnly = true)
@@ -33,11 +34,13 @@ public class RaceService {
                 .laps(faker.number().numberBetween(config.getRaceMinLaps(), config.getRaceMaxLaps()))
                 .raceDate(faker.date().past(config.getRacePreviousDays(), TimeUnit.DAYS))
                 .build());
-        race.setPodium(createPodium());
+        race.setPodium(createPodium(race));
         return race;
     }
 
-    List<Driver> createPodium() {
-        return pointList.stream().map(driverService::giveRandomDriverPoints).toList();
+    List<PodiumPosition> createPodium(Race race) {
+        return IntStream.range(0, pointList.size()).boxed()
+                .map(i -> new PodiumPosition(race, driverService.giveRandomDriverPoints(pointList.get(i)), i+1))
+                .toList();
     }
 }
