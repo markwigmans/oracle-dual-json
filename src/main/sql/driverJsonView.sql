@@ -9,7 +9,7 @@ SELECT JSON {
     }
     FROM TEAM t
     WHERE d.TEAM_ID = t.ID),
-    'race' :[ SELECT JSON { 'positionId' : pp.ID,
+    'races' :[ SELECT JSON { 'positionId' : pp.ID,
                   UNNEST (	SELECT JSON {'raceId' : r.ID, 'name' : r.NAME, 'country' : r.COUNTRY}
                   FROM RACE r WHERE r.ID = pp.RACE_ID),
                   'position' : pp."POSITION"

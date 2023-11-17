@@ -1,6 +1,7 @@
 package com.btb.odj.service;
 
 import com.btb.odj.config.DatasetConfig;
+import com.btb.odj.model.jpa.Driver;
 import com.btb.odj.model.jpa.PodiumPosition;
 import com.btb.odj.model.jpa.Race;
 import com.github.javafaker.Faker;
@@ -39,8 +40,14 @@ public class RaceService {
     }
 
     List<PodiumPosition> createPodium(Race race) {
+        final List<Driver> drivers = driverService.getWinners(pointList.size());
+
         return IntStream.range(0, pointList.size()).boxed()
-                .map(i -> new PodiumPosition(race, driverService.giveRandomDriverPoints(pointList.get(i)), i+1))
-                .toList();
+                .filter(i -> i < drivers.size())
+                .map( i -> {
+                    final Driver driver = driverService.givePoints(drivers.get(i),  pointList.get(i));
+                    return new PodiumPosition(race, driver, i+1);
+        }).toList();
+
     }
 }

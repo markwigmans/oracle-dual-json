@@ -1,6 +1,5 @@
 package com.btb.odj.model.jpa;
 
-import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.OneToMany;
@@ -30,7 +29,7 @@ public class Team extends AbstractEntity {
 
     private int points;
 
-    @OneToMany(cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "team")
     @ToStringExclude
     private List<Driver> drivers;
 }

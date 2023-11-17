@@ -2,7 +2,7 @@ package com.btb.odj.model.jpa;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
-import jakarta.persistence.ManyToMany;
+import jakarta.persistence.OneToMany;
 import lombok.*;
 import org.apache.commons.lang3.builder.ToStringExclude;
 
@@ -26,7 +26,7 @@ public class Race extends AbstractEntity {
     private int laps;
     private Date raceDate;
 
-    @ManyToMany(cascade = CascadeType.ALL)
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "race")
     @ToStringExclude
     private List<PodiumPosition> podium;
 }

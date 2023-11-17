@@ -1,6 +1,5 @@
 package com.btb.odj.model.jpa;
 
-import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.ManyToOne;
 import lombok.*;
@@ -18,11 +17,11 @@ import org.apache.commons.lang3.builder.ToStringExclude;
 @Getter
 public class PodiumPosition extends AbstractEntity {
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne
     @ToStringExclude
     private Race race;
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne
     @ToStringExclude
     private Driver driver;
 
