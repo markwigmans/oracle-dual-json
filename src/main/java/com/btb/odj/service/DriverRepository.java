@@ -10,7 +10,7 @@ import java.util.UUID;
 
 public interface DriverRepository extends JpaRepository<Driver, UUID> {
 
-    @Query(value = "select * from driver order by dbms_random.value FETCH FIRST ?1 ROWS ONLY", nativeQuery = true)
+    @Query(value = "select * from driver sample(10) FETCH FIRST ?1 ROWS ONLY ", nativeQuery = true)
     List<Driver> findRandomDrivers(Integer limit);
 
     @Modifying
