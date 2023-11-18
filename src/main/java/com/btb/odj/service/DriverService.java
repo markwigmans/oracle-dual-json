@@ -34,11 +34,7 @@ public class DriverService {
     }
 
     @Transactional
-    public Driver givePoints(Driver driver, int points) {
-        driver.setPoints(driver.getPoints() + points);
-        // update team points
-        int teamPoints = driver.getTeam().getPoints();
-        driver.getTeam().setPoints(teamPoints + points);
-        return driver;
+    public void updatePoints() {
+        repository.updatePoints();
     }
 }

@@ -33,4 +33,9 @@ public class TeamService {
         team.setDrivers(IntStream.range(0, count).mapToObj(t -> driverService.create(team)).toList());
         return team;
     }
+
+    @Transactional
+    public void updatePoints() {
+        repository.updatePoints();
+    }
 }

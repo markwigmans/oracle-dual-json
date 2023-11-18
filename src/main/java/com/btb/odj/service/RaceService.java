@@ -44,10 +44,8 @@ public class RaceService {
 
         return IntStream.range(0, pointList.size()).boxed()
                 .filter(i -> i < drivers.size())
-                .map( i -> {
-                    final Driver driver = driverService.givePoints(drivers.get(i),  pointList.get(i));
-                    return new PodiumPosition(race, driver, i+1);
-        }).toList();
+                .map( i -> new PodiumPosition(race, drivers.get(i), pointList.get(i), i+1))
+                .toList();
 
     }
 }

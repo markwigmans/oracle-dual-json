@@ -23,6 +23,7 @@ public class DataService {
 
     private final DatasetConfig config;
     private final TeamService teamService;
+    private final DriverService driverService;
     private final RaceService raceService;
     private final ExecutorService executor = Executors.newWorkStealingPool();
 
@@ -34,6 +35,8 @@ public class DataService {
                 log.info("Data creation started");
                 createTeams((int) (size * config.getTeamsMultiplier()));
                 createRace(size);
+                driverService.updatePoints();
+                teamService.updatePoints();
             });
             result.whenComplete((r, ex) -> {
                 running.getAndSet(false);
@@ -49,7 +52,7 @@ public class DataService {
     }
 
     void createTeams(int races) {
-        final List<List<Integer>> groups = split(IntStream.range(0, races).boxed().toList(), 10);
+        final List<List<Integer>> groups = split(IntStream.range(0, races).boxed().toList(), 100);
         var array = groups.stream()
                 .map(g -> CompletableFuture.supplyAsync(() -> g.stream()
                                 .map(t -> teamService.create(config.getMaxDrivers()))
@@ -64,7 +67,19 @@ public class DataService {
     }
 
     void createRace(int races) {
-        IntStream.range(0, races).forEach(r -> raceService.create());
+        final List<List<Integer>> groups = split(IntStream.range(0, races).boxed().toList(), 100);
+        var array = groups.stream()
+                .map(g -> CompletableFuture.supplyAsync(() -> g.stream()
+                        .map(t -> raceService.create())
+                        .toList(), executor))
+                .toArray(CompletableFuture[]::new);
+        // wait till ready
+        try {
+            CompletableFuture.allOf(array).get();
+        } catch (ExecutionException | InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+
     }
 
     List<List<Integer>> split(List<Integer> list, int size) {

@@ -4,6 +4,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.ManyToOne;
 import lombok.*;
 import org.apache.commons.lang3.builder.ToStringExclude;
+import org.hibernate.annotations.Immutable;
 
 /**
  *
@@ -13,8 +14,8 @@ import org.apache.commons.lang3.builder.ToStringExclude;
 @EqualsAndHashCode(onlyExplicitlyIncluded = true, callSuper = true)
 @NoArgsConstructor
 @AllArgsConstructor
-@Setter
 @Getter
+@Immutable
 public class PodiumPosition extends AbstractEntity {
 
     @ManyToOne
@@ -25,5 +26,6 @@ public class PodiumPosition extends AbstractEntity {
     @ToStringExclude
     private Driver driver;
 
+    private int points;
     private int position;
 }
