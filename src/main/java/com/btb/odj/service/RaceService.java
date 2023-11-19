@@ -28,19 +28,21 @@ public class RaceService {
     private final List<Integer> pointList = List.of(25, 18, 15, 12, 10, 8, 6, 4, 2, 1);
 
     @Transactional
-    public Race create() {
+    public Race create(int size) {
         Race race = repository.save(Race.builder()
                 .name(faker.address().cityName())
                 .country(faker.address().country())
                 .laps(faker.number().numberBetween(config.getRaceMinLaps(), config.getRaceMaxLaps()))
                 .raceDate(faker.date().past(config.getRacePreviousDays(), TimeUnit.DAYS))
                 .build());
-        race.setPodium(createPodium(race));
+        race.setPodium(createPodium(race, size));
         return race;
     }
 
-    List<PodiumPosition> createPodium(Race race) {
-        final List<Driver> drivers = driverService.getWinners(pointList.size());
+    List<PodiumPosition> createPodium(Race race, int size) {
+        // it is in % and factor 10 just to be sure there are enough drivers found
+        float percentage = size * 1000f / pointList.size();
+        final List<Driver> drivers = driverService.getWinners(percentage, pointList.size());
 
         return IntStream.range(0, pointList.size()).boxed()
                 .filter(i -> i < drivers.size())

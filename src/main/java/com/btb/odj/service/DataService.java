@@ -70,7 +70,7 @@ public class DataService {
         final List<List<Integer>> groups = split(IntStream.range(0, races).boxed().toList(), 100);
         var array = groups.stream()
                 .map(g -> CompletableFuture.supplyAsync(() -> g.stream()
-                        .map(t -> raceService.create())
+                        .map(t -> raceService.create(races))
                         .toList(), executor))
                 .toArray(CompletableFuture[]::new);
         // wait till ready

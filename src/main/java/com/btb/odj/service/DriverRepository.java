@@ -10,10 +10,10 @@ import java.util.UUID;
 
 public interface DriverRepository extends JpaRepository<Driver, UUID> {
 
-    @Query(value = "select * from driver sample(10) FETCH FIRST ?1 ROWS ONLY ", nativeQuery = true)
-    List<Driver> findRandomDrivers(Integer limit);
-
     @Modifying
-    @Query(value = "UPDATE DRIVER d SET d.POINTS = COALESCE((SELECT sum(pp.POINTS) FROM PODIUM_POSITION pp WHERE pp.DRIVER_ID = d.ID),0)", nativeQuery = true)
+    @Query(value = """
+            UPDATE DRIVER d
+            SET d.POINTS = (SELECT sum(pp.POINTS) FROM PODIUM_POSITION pp WHERE pp.DRIVER_ID = d.ID)
+            WHERE d.ID IN (SELECT DRIVER_ID FROM PODIUM_POSITION)""", nativeQuery = true)
     void updatePoints();
 }
