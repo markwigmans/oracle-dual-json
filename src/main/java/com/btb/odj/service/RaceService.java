@@ -41,12 +41,12 @@ public class RaceService {
 
     List<PodiumPosition> createPodium(Race race, int size) {
         // it is in % and factor 10 just to be sure there are enough drivers found
-        float percentage = size * 1000f / pointList.size();
-        final List<Driver> drivers = driverService.getWinners(percentage, pointList.size());
+        float percentage = pointList.size() * 1000f / size;
+        final List<Driver> winners = driverService.getWinners(percentage, pointList.size());
 
         return IntStream.range(0, pointList.size()).boxed()
-                .filter(i -> i < drivers.size())
-                .map( i -> new PodiumPosition(race, drivers.get(i), pointList.get(i), i+1))
+                .filter(i -> i < winners.size())
+                .map(i -> new PodiumPosition(race, winners.get(i), pointList.get(i), i + 1))
                 .toList();
 
     }

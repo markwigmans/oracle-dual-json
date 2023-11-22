@@ -1,6 +1,6 @@
 services:
-  dev-db:
-    image:  ghcr.io/markwigmans/23cfree
+  race-db:
+    image: ghcr.io/markwigmans/23cfree
     environment:
       ORACLE_PWD: oracle
     ports:
@@ -15,5 +15,5 @@ services:
       - 8181:8181
       - 27017:27017
     depends_on:
-      dev-db:
+      race-db:
         condition: service_healthy

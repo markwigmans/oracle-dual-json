@@ -12,6 +12,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Locale;
 
 @Component
 @Transactional(readOnly = true)
@@ -22,7 +23,7 @@ public class DriverService {
     private final Faker faker;
     private final DriverRepository repository;
     @PersistenceContext
-    private EntityManager entityManager;
+    private final EntityManager entityManager;
 
     @Transactional
     public Driver create(Team team) {
@@ -36,8 +37,9 @@ public class DriverService {
 
     public List<Driver> getWinners(float percentage, int limit) {
         // create the query itself, because the sample parameter doesn't work as a SQL parameter
-        final float perc = percentage > 50 ? 50 : percentage;
-        final Query query = entityManager.createNativeQuery(String.format("select * from driver sample(%f) FETCH FIRST :limit ROWS ONLY", perc), Driver.class);
+        final float perc = percentage > 10 ? 10 : percentage;
+        // enforce Locale to be sure that a '.' is used as separator (otherwise we get illegal SQL errors)
+        final Query query = entityManager.createNativeQuery(String.format(Locale.US, "select * from driver sample(%f) FETCH FIRST :limit ROWS ONLY", perc), Driver.class);
         query.setParameter("limit", limit);
         return query.getResultList();
     }
