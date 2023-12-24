@@ -15,5 +15,4 @@ public class ApplicationConfig {
         // Dutch texts with fixed seed
         return new Faker(new Locale("nl-NL"), new Random(24));
     }
-
 }

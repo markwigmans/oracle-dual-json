@@ -1,13 +1,10 @@
-package com.btb.odj.service;
+package com.btb.odj.repository;
 
 import com.btb.odj.model.jpa.Driver;
-import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 
-import java.util.UUID;
-
-public interface DriverRepository extends JpaRepository<Driver, UUID> {
+public interface DriverRepository extends AbstractRepository<Driver> {
 
     @Modifying
     @Query(value = """

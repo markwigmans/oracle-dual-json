@@ -14,6 +14,8 @@ import java.util.UUID;
 @Getter
 public abstract class AbstractEntity implements Serializable {
 
+    public static final String EAGER_ALL = "ENTITY.EAGER.ALL";
+
     @Id
     @UuidV7Generator
     private UUID id;

@@ -1,5 +1,7 @@
 package com.btb.odj.model.jpa;
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Index;
 import jakarta.persistence.ManyToOne;
@@ -19,6 +21,7 @@ import org.hibernate.annotations.Immutable;
 @AllArgsConstructor
 @Getter
 @Immutable
+@JsonIdentityInfo(generator = ObjectIdGenerators.UUIDGenerator.class)
 public class PodiumPosition extends AbstractEntity {
 
     @ManyToOne

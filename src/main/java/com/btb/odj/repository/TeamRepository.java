@@ -1,13 +1,10 @@
-package com.btb.odj.service;
+package com.btb.odj.repository;
 
 import com.btb.odj.model.jpa.Team;
-import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 
-import java.util.UUID;
-
-public interface TeamRepository extends JpaRepository<Team, UUID> {
+public interface TeamRepository extends AbstractRepository<Team> {
 
     @Modifying
     @Query(value = """

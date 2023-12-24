@@ -4,9 +4,12 @@ import com.btb.odj.config.DatasetConfig;
 import com.btb.odj.model.jpa.Driver;
 import com.btb.odj.model.jpa.PodiumPosition;
 import com.btb.odj.model.jpa.Race;
+import com.btb.odj.repository.RaceRepository;
 import com.github.javafaker.Faker;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -18,12 +21,12 @@ import java.util.stream.IntStream;
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
 @Slf4j
-public class RaceService {
+public class JRaceService {
 
     private final Faker faker;
     private final DatasetConfig config;
     private final RaceRepository repository;
-    private final DriverService driverService;
+    private final JDriverService jDriverService;
 
     private final List<Integer> pointList = List.of(25, 18, 15, 12, 10, 8, 6, 4, 2, 1);
 
@@ -42,12 +45,16 @@ public class RaceService {
     List<PodiumPosition> createPodium(Race race, int size) {
         // it is in % and factor 10 just to be sure there are enough drivers found
         float percentage = pointList.size() * 1000f / size;
-        final List<Driver> winners = driverService.getWinners(percentage, pointList.size());
+        final List<Driver> winners = jDriverService.getWinners(percentage, pointList.size());
 
         return IntStream.range(0, pointList.size()).boxed()
                 .filter(i -> i < winners.size())
                 .map(i -> new PodiumPosition(race, winners.get(i), pointList.get(i), i + 1))
                 .toList();
 
+    }
+
+    public Page<Race> findAll(Pageable page) {
+        return repository.findAll(page);
     }
 }

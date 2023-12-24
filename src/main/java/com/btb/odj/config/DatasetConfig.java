@@ -15,4 +15,3 @@ public class DatasetConfig {
     private final int raceMaxLaps = 80;
     private final int racePreviousDays = 365;
 }
-

@@ -1,13 +1,17 @@
 package com.btb.odj.service;
 
 import com.btb.odj.model.jpa.Driver;
+import com.btb.odj.model.jpa.Race;
 import com.btb.odj.model.jpa.Team;
+import com.btb.odj.repository.DriverRepository;
 import com.github.javafaker.Faker;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.Query;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -18,7 +22,7 @@ import java.util.Locale;
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
 @Slf4j
-public class DriverService {
+public class JDriverService {
 
     private final Faker faker;
     private final DriverRepository repository;
@@ -47,5 +51,9 @@ public class DriverService {
     @Transactional
     public void updatePoints() {
         repository.updatePoints();
+    }
+
+    public Page<Driver> findAll(Pageable page) {
+        return repository.findAll(page);
     }
 }

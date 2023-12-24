@@ -6,14 +6,41 @@ services:
     ports:
       - 1521:1521
 
-  ords:
-    image: container-registry.oracle.com/database/ords:latest
-    volumes:
-      - ./data/ords/variables:/opt/oracle/variables
-      - ./data/ords/config/:/etc/ords/config/
+#  ords:
+#    image: container-registry.oracle.com/database/ords:latest
+#    volumes:
+#      - ./data/ords/variables:/opt/oracle/variables
+#      - ./data/ords/config/:/etc/ords/config/
+#    ports:
+#      - 8181:8181
+#      - 27017:27017
+#    depends_on:
+#      race-db:
+#        condition: service_healthy
+
+  mq:
+    image: quay.io/artemiscloud/activemq-artemis-broker:artemis.2.28.0
     ports:
-      - 8181:8181
-      - 27017:27017
-    depends_on:
-      race-db:
-        condition: service_healthy
+      - "8161:8161"
+      - "61616:61616"
+    environment:
+      AMQ_USER: CNL
+      AMQ_PASSWORD: CNL
+      AMQ_EXTRA_ARGS: "--relax-jolokia --require-login"
+
+  mongo:
+    image: mongo:6
+    ports:
+      - "27017:27017"
+    restart: always
+    volumes:
+      - ./data/mongo:/data/db
+
+  mongo-gui:
+    container_name: mongo-gui
+    image: mongo-express:latest
+    environment:
+      ME_CONFIG_MONGODB_SERVER: mongo
+    ports:
+      - 8081:8081
+    restart: unless-stopped

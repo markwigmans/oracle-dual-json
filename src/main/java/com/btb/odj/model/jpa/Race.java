@@ -1,5 +1,7 @@
 package com.btb.odj.model.jpa;
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.OneToMany;
@@ -19,6 +21,7 @@ import java.util.List;
 @AllArgsConstructor
 @Setter
 @Getter
+@JsonIdentityInfo(generator = ObjectIdGenerators.UUIDGenerator.class)
 public class Race extends AbstractEntity {
 
     private String name;
