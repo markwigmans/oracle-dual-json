@@ -1,10 +1,9 @@
 package com.btb.odj.model.jpa;
 
-import com.fasterxml.jackson.annotation.JsonIdentityInfo;
-import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.Table;
 import lombok.*;
 import org.apache.commons.lang3.builder.ToStringExclude;
 
@@ -15,14 +14,14 @@ import java.util.List;
  *
  */
 @Entity
+@Table(name = "Race")
 @Builder
 @EqualsAndHashCode(onlyExplicitlyIncluded = true, callSuper = true)
 @NoArgsConstructor
 @AllArgsConstructor
 @Setter
 @Getter
-@JsonIdentityInfo(generator = ObjectIdGenerators.UUIDGenerator.class)
-public class Race extends AbstractEntity {
+public class J_Race extends J_AbstractEntity {
 
     private String name;
     private String country;
@@ -31,5 +30,5 @@ public class Race extends AbstractEntity {
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "race")
     @ToStringExclude
-    private List<PodiumPosition> podium;
+    private List<J_PodiumPosition> podium;
 }

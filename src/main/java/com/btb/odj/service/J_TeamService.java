@@ -1,7 +1,7 @@
 package com.btb.odj.service;
 
-import com.btb.odj.model.jpa.Team;
-import com.btb.odj.repository.TeamRepository;
+import com.btb.odj.model.jpa.J_Team;
+import com.btb.odj.repository.jpa.J_TeamRepository;
 import com.github.javafaker.Faker;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -18,15 +18,15 @@ import java.util.stream.IntStream;
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
 @Slf4j
-public class JTeamService {
+public class J_TeamService {
 
     private final Faker faker;
-    private final JDriverService jDriverService;
-    private final TeamRepository repository;
+    private final J_DriverService jDriverService;
+    private final J_TeamRepository repository;
 
     @Transactional
-    public Team create(int maxDrivers) {
-        Team team = repository.save(Team.builder()
+    public J_Team create(int maxDrivers) {
+        J_Team team = repository.save(J_Team.builder()
                 .name(faker.company().name())
                 .city(faker.address().city())
                 .streetName(faker.address().streetName())
@@ -44,16 +44,15 @@ public class JTeamService {
         repository.updatePoints();
     }
 
-
-    public Optional<Team> findById(UUID id, boolean eager) {
-        if (eager) {
-            return repository.findEagerById(id);
-        } else {
-            return repository.findById(id);
-        }
+    public Optional<J_Team> findById(String id) {
+        return findById(UUID.fromString(id));
     }
 
-    public Page<Team> findAll(Pageable page) {
+    public Optional<J_Team> findById(UUID id) {
+        return repository.findById(id);
+    }
+
+    public Page<J_Team> findAll(Pageable page) {
         return repository.findAll(page);
     }
 }

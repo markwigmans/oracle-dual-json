@@ -12,9 +12,7 @@ import java.util.UUID;
 @MappedSuperclass
 @NoArgsConstructor
 @Getter
-public abstract class AbstractEntity implements Serializable {
-
-    public static final String EAGER_ALL = "ENTITY.EAGER.ALL";
+public abstract class J_AbstractEntity implements Serializable {
 
     @Id
     @UuidV7Generator

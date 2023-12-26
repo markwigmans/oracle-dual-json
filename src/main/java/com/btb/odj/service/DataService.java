@@ -1,10 +1,9 @@
 package com.btb.odj.service;
 
 import com.btb.odj.config.DatasetConfig;
-import com.btb.odj.model.jpa.AbstractEntity;
-import com.btb.odj.model.jpa.Driver;
-import com.btb.odj.model.jpa.Race;
-import com.btb.odj.model.jpa.Team;
+import com.btb.odj.model.jpa.J_Driver;
+import com.btb.odj.model.jpa.J_Race;
+import com.btb.odj.model.jpa.J_Team;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
@@ -21,7 +20,6 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -31,9 +29,9 @@ import java.util.stream.IntStream;
 public class DataService {
 
     private final DatasetConfig config;
-    private final JTeamService teamService;
-    private final JDriverService driverService;
-    private final JRaceService raceService;
+    private final J_TeamService teamService;
+    private final J_DriverService driverService;
+    private final J_RaceService raceService;
     private final QueueService queueService;
 
     @Value("${data.batch.size:100}")
@@ -50,7 +48,7 @@ public class DataService {
                 createRace(size);
                 driverService.updatePoints();
                 teamService.updatePoints();
-                broadcastData();
+                syncData();
             });
             result.whenComplete((r, ex) -> {
                 running.getAndSet(false);
@@ -65,15 +63,16 @@ public class DataService {
         return CompletableFuture.completedFuture(null);
     }
 
-    private void broadcastData() {
+    public void syncData() {
         broadcastDrivers();
         broadcastTeams();
+        broadcastDrivers();
         broadcastRaces();
     }
 
     private void broadcastDrivers() {
         PageRequest pageRequest = PageRequest.ofSize(batchSize);
-        Page<Driver> entiteitenPage;
+        Page<J_Driver> entiteitenPage;
         do {
             entiteitenPage = driverService.findAll(pageRequest);
             queueService.sendUpdateMessage(Collections.unmodifiableList(entiteitenPage.getContent()));
@@ -83,7 +82,7 @@ public class DataService {
 
     private void broadcastTeams() {
         PageRequest pageRequest = PageRequest.ofSize(batchSize);
-        Page<Team> entiteitenPage;
+        Page<J_Team> entiteitenPage;
         do {
             entiteitenPage = teamService.findAll(pageRequest);
             queueService.sendUpdateMessage(Collections.unmodifiableList(entiteitenPage.getContent()));
@@ -93,7 +92,7 @@ public class DataService {
 
     private void broadcastRaces() {
         PageRequest pageRequest = PageRequest.ofSize(batchSize);
-        Page<Race> entiteitenPage;
+        Page<J_Race> entiteitenPage;
         do {
             entiteitenPage = raceService.findAll(pageRequest);
             queueService.sendUpdateMessage(Collections.unmodifiableList(entiteitenPage.getContent()));

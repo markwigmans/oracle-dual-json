@@ -1,10 +1,9 @@
 package com.btb.odj.service;
 
 import com.btb.odj.config.QueueConfiguration;
-import com.btb.odj.model.jpa.AbstractEntity;
+import com.btb.odj.model.jpa.J_AbstractEntity;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.jms.core.JmsTemplate;
 import org.springframework.stereotype.Component;
 
@@ -18,14 +17,14 @@ public class QueueService {
     private final JmsTemplate jmsTemplate;
     private final QueueConfiguration queueConfiguration;
 
-    public void sendUpdateMessage(List<AbstractEntity> entities){
+    public void sendUpdateMessage(List<J_AbstractEntity> entities){
         entities.forEach(this::sendUpdateMessage);
     }
 
-    public void sendUpdateMessage(AbstractEntity entity) {
+    public void sendUpdateMessage(J_AbstractEntity entity) {
         try{
             EntityMessage message = new EntityMessage(entity.getClass(), entity.getId().toString());
-            log.info("Sending ({}) to Topic: {}", message, queueConfiguration.getUpdateDataTopic());
+            log.debug("Sending ({}) to Topic: {}", message, queueConfiguration.getUpdateDataTopic());
             jmsTemplate.convertAndSend(queueConfiguration.getUpdateDataTopic(), message);
         } catch(Exception e){
             log.error("Exception during send Message:", e);

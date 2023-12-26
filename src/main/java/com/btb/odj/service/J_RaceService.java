@@ -1,10 +1,10 @@
 package com.btb.odj.service;
 
 import com.btb.odj.config.DatasetConfig;
-import com.btb.odj.model.jpa.Driver;
-import com.btb.odj.model.jpa.PodiumPosition;
-import com.btb.odj.model.jpa.Race;
-import com.btb.odj.repository.RaceRepository;
+import com.btb.odj.model.jpa.J_Driver;
+import com.btb.odj.model.jpa.J_PodiumPosition;
+import com.btb.odj.model.jpa.J_Race;
+import com.btb.odj.repository.jpa.J_RaceRepository;
 import com.github.javafaker.Faker;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -14,6 +14,8 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.IntStream;
 
@@ -21,40 +23,48 @@ import java.util.stream.IntStream;
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
 @Slf4j
-public class JRaceService {
+public class J_RaceService {
 
     private final Faker faker;
     private final DatasetConfig config;
-    private final RaceRepository repository;
-    private final JDriverService jDriverService;
+    private final J_RaceRepository repository;
+    private final J_DriverService jDriverService;
 
     private final List<Integer> pointList = List.of(25, 18, 15, 12, 10, 8, 6, 4, 2, 1);
 
     @Transactional
-    public Race create(int size) {
-        Race race = repository.save(Race.builder()
+    public J_Race create(int size) {
+        J_Race JRace = repository.save(J_Race.builder()
                 .name(faker.address().cityName())
                 .country(faker.address().country())
                 .laps(faker.number().numberBetween(config.getRaceMinLaps(), config.getRaceMaxLaps()))
                 .raceDate(faker.date().past(config.getRacePreviousDays(), TimeUnit.DAYS))
                 .build());
-        race.setPodium(createPodium(race, size));
-        return race;
+        JRace.setPodium(createPodium(JRace, size));
+        return JRace;
     }
 
-    List<PodiumPosition> createPodium(Race race, int size) {
+    List<J_PodiumPosition> createPodium(J_Race JRace, int size) {
         // it is in % and factor 10 just to be sure there are enough drivers found
         float percentage = pointList.size() * 1000f / size;
-        final List<Driver> winners = jDriverService.getWinners(percentage, pointList.size());
+        final List<J_Driver> winners = jDriverService.getWinners(percentage, pointList.size());
 
         return IntStream.range(0, pointList.size()).boxed()
                 .filter(i -> i < winners.size())
-                .map(i -> new PodiumPosition(race, winners.get(i), pointList.get(i), i + 1))
+                .map(i -> new J_PodiumPosition(JRace, winners.get(i), pointList.get(i), i + 1))
                 .toList();
 
     }
 
-    public Page<Race> findAll(Pageable page) {
+    public Optional<J_Race> findById(String id) {
+        return findById(UUID.fromString(id));
+    }
+
+    public Optional<J_Race> findById(UUID id) {
+        return repository.findById(id);
+    }
+
+    public Page<J_Race> findAll(Pageable page) {
         return repository.findAll(page);
     }
 }

@@ -18,7 +18,6 @@ public class DataController {
 
     private final DataService dataService;
 
-
     @GetMapping("/{count}")
     public void createRaces(@PathVariable int count) {
         CompletableFuture<Void> dataset = dataService.createDataset(count);
@@ -28,5 +27,10 @@ public class DataController {
                 log.error("Exception", ex);
             }
         });
+    }
+
+    @GetMapping("/sync")
+    public void syncData() {
+        dataService.syncData();
     }
 }

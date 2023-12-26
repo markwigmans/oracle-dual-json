@@ -14,6 +14,6 @@ public class ESDataService {
             destination = "#{queueConfiguration.getUpdateDataTopic()}",
             containerFactory = "topicConnectionFactory")
     public void receiveMessage(EntityMessage message) {
-        log.info("received {} from the queue", message);
+        //log.info("received {} from the queue", message);
     }
 }

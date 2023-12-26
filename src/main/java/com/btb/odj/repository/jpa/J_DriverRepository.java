@@ -1,10 +1,10 @@
-package com.btb.odj.repository;
+package com.btb.odj.repository.jpa;
 
-import com.btb.odj.model.jpa.Driver;
+import com.btb.odj.model.jpa.J_Driver;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 
-public interface DriverRepository extends AbstractRepository<Driver> {
+public interface J_DriverRepository extends J_AbstractRepository<J_Driver> {
 
     @Modifying
     @Query(value = """
