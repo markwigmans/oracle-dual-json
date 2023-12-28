@@ -1,8 +1,10 @@
 package com.btb.odj.mapper;
 
+import com.btb.odj.model.elasticsearch.E_Driver;
 import com.btb.odj.model.jpa.J_Driver;
 import com.btb.odj.model.mongodb.M_Driver;
 import com.btb.odj.model.mongodb.M_Driver.M_DriverBuilder;
+import com.btb.odj.model.mongodb.M_Team;
 import com.btb.odj.repository.mongodb.M_DriverRepository;
 import com.btb.odj.repository.mongodb.M_TeamRepository;
 import lombok.extern.slf4j.Slf4j;
@@ -25,15 +27,19 @@ public abstract class DriverMapper {
 
     @AfterMapping
     protected void fillId(J_Driver source, @MappingTarget M_DriverBuilder target) {
-        log.info("find ID for: {}", target);
+        log.debug("find ID for: {}", target);
         Optional<M_Driver> driver = driverRepository.findM_DriverByRefId(source.getId());
         driver.ifPresent(e -> target.id(e.getId()));
-//        Optional<M_Team> team = teamRepository.findM_TeamByRefId(source.getTeam().getId());
-//        team.ifPresent((target::team));
+        Optional<M_Team> team = teamRepository.findM_TeamByRefId(source.getTeam().getId());
+        team.ifPresent(target::team);
     }
 
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "refId", source = "id")
-    //@Mapping(target = "team", ignore = true)
+    @Mapping(target = "team", ignore = true)
     public abstract M_Driver transform_J_to_M(J_Driver driver);
+
+    @Mapping(target = "refId", source = "id")
+    @Mapping(target = "team.refId", source = "team.id")
+    public abstract E_Driver from_J_to_E(J_Driver driver);
 }

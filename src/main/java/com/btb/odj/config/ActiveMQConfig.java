@@ -29,6 +29,15 @@ public class ActiveMQConfig {
         return factory;
     }
 
+    @Bean
+    public JmsListenerContainerFactory<?> queueConnectionFactory(ConnectionFactory connectionFactory,
+                                                                 DefaultJmsListenerContainerFactoryConfigurer configurer) {
+        DefaultJmsListenerContainerFactory factory = new DefaultJmsListenerContainerFactory();
+        configurer.configure(factory, connectionFactory);
+        factory.setPubSubDomain(false);
+        return factory;
+    }
+
     @Bean // Serialize message content to json using TextMessage
     public MessageConverter jacksonJmsMessageConverter() {
         MappingJackson2MessageConverter converter = new MappingJackson2MessageConverter();
@@ -38,7 +47,7 @@ public class ActiveMQConfig {
     }
 
     /**
-     * Dynamically resolve pubsub vs queue
+     * Dynamically resolve pubsub vs queue so that we can use the same jmsTemplate
      */
     @Bean
     public DynamicDestinationResolver destinationResolver() {

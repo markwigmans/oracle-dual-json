@@ -11,7 +11,6 @@ import com.btb.odj.repository.mongodb.M_RaceRepository;
 import com.btb.odj.repository.mongodb.M_TeamRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.jms.annotation.JmsListener;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -33,19 +32,17 @@ public class MongoDataService {
     private final RaceMapper raceMapper;
     private final TeamMapper teamMapper;
 
-    @JmsListener(
-            destination = "#{queueConfiguration.getUpdateDataTopic()}",
-            containerFactory = "topicConnectionFactory")
+    //@JmsListener(destination = "#{queueConfiguration.getUpdateDataTopic()}", containerFactory = "topicConnectionFactory")
     @Transactional(readOnly = true)
     public void receiveMessage(EntityMessage message) {
-        if (message.type() == J_Driver.class) {
+        if (message.type().equals(J_Driver.class)) {
             processDriver(message);
-        }
-        if (message.type() == J_Team.class) {
+        } else if (message.type().equals(J_Team.class)) {
             processTeam(message);
-        }
-        if (message.type() == J_Race.class) {
+        } else if (message.type().equals(J_Race.class)) {
             processRace(message);
+        } else {
+            log.warn("Message({}) not processed", message);
         }
     }
 

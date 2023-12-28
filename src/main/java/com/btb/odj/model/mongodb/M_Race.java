@@ -3,7 +3,9 @@ package com.btb.odj.model.mongodb;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import org.bson.types.ObjectId;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.util.Date;
@@ -17,7 +19,8 @@ import java.util.UUID;
 public class M_Race {
 
     @Id
-    private String id;
+    private ObjectId id;
+    @Indexed
     private UUID refId;
 
     private String name;

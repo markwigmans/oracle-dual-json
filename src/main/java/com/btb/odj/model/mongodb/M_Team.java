@@ -3,7 +3,9 @@ package com.btb.odj.model.mongodb;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import org.bson.types.ObjectId;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.DocumentReference;
 
@@ -17,7 +19,8 @@ import java.util.UUID;
 public class M_Team {
 
     @Id
-    private String id;
+    private ObjectId id;
+    @Indexed
     private UUID refId;
 
     private String name;
@@ -27,6 +30,6 @@ public class M_Team {
     private String country;
     private int points;
 
-    @DocumentReference
+    @DocumentReference(lazy = true)
     private List<M_Driver> drivers;
 }

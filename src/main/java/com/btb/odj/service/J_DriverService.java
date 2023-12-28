@@ -44,7 +44,9 @@ public class J_DriverService {
         // create the query itself, because the sample parameter doesn't work as a SQL parameter
         final float perc = percentage > 10 ? 10 : percentage;
         // enforce Locale to be sure that a '.' is used as separator (otherwise we get illegal SQL errors)
-        final Query query = entityManager.createNativeQuery(String.format(Locale.US, "select * from driver sample(%f) FETCH FIRST :limit ROWS ONLY", perc), J_Driver.class);
+        final Query query = entityManager.createNativeQuery(String.format(Locale.US,
+                "select * from driver sample(%f) ORDER BY DBMS_RANDOM.RANDOM FETCH FIRST :limit ROWS ONLY", perc),
+                J_Driver.class);
         query.setParameter("limit", limit);
         return query.getResultList();
     }

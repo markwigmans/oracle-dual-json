@@ -1,9 +1,7 @@
 package com.btb.odj.service;
 
 import com.btb.odj.config.DatasetConfig;
-import com.btb.odj.model.jpa.J_Driver;
-import com.btb.odj.model.jpa.J_Race;
-import com.btb.odj.model.jpa.J_Team;
+import com.btb.odj.model.jpa.J_AbstractEntity;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
@@ -12,14 +10,12 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Component;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -63,46 +59,34 @@ public class DataService {
         return CompletableFuture.completedFuture(null);
     }
 
+    @SneakyThrows
     public void syncData() {
-        broadcastDrivers();
-        broadcastTeams();
-        broadcastDrivers();
-        broadcastRaces();
+        log.info("Start broadcast data");
+        List<CompletableFuture<Void>> futures = new LinkedList<>();
+        futures.add(broadcast(driverService::findAll));
+        futures.add(broadcast(teamService::findAll));
+        futures.add(broadcast(raceService::findAll));
+        // wait till ready
+        CompletableFuture.allOf(futures.toArray(CompletableFuture[]::new)).get();
+        log.info("end broadcast data");
     }
 
-    private void broadcastDrivers() {
+    private CompletableFuture<Void> broadcast(Function<PageRequest, Page<? extends J_AbstractEntity>> func) {
+        List<CompletableFuture<Void>> futures = new LinkedList<>();
         PageRequest pageRequest = PageRequest.ofSize(batchSize);
-        Page<J_Driver> entiteitenPage;
+        Page<? extends J_AbstractEntity> entiteitenPage;
         do {
-            entiteitenPage = driverService.findAll(pageRequest);
-            queueService.sendUpdateMessage(Collections.unmodifiableList(entiteitenPage.getContent()));
+            entiteitenPage = func.apply(pageRequest);
+            final List<J_AbstractEntity> copy = Collections.unmodifiableList(entiteitenPage.getContent());
+            futures.add(CompletableFuture.runAsync(() -> queueService.sendUpdateMessage(copy),  executor));
             pageRequest = pageRequest.next();
         } while (!entiteitenPage.isLast());
-    }
-
-    private void broadcastTeams() {
-        PageRequest pageRequest = PageRequest.ofSize(batchSize);
-        Page<J_Team> entiteitenPage;
-        do {
-            entiteitenPage = teamService.findAll(pageRequest);
-            queueService.sendUpdateMessage(Collections.unmodifiableList(entiteitenPage.getContent()));
-            pageRequest = pageRequest.next();
-        } while (!entiteitenPage.isLast());
-    }
-
-    private void broadcastRaces() {
-        PageRequest pageRequest = PageRequest.ofSize(batchSize);
-        Page<J_Race> entiteitenPage;
-        do {
-            entiteitenPage = raceService.findAll(pageRequest);
-            queueService.sendUpdateMessage(Collections.unmodifiableList(entiteitenPage.getContent()));
-            pageRequest = pageRequest.next();
-        } while (!entiteitenPage.isLast());
+        return CompletableFuture.allOf(futures.toArray(CompletableFuture[]::new));
     }
 
     @SneakyThrows
     void createTeams(int races) {
-        final List<List<Integer>> groups = split(IntStream.range(0, races).boxed().toList(), batchSize);
+        final Collection<List<Integer>> groups = split(IntStream.range(0, races).boxed().toList(), batchSize);
         var array = groups.stream()
                 .map(g -> CompletableFuture.supplyAsync(() -> g.stream()
                         .map(t -> teamService.create(config.getMaxDrivers()))
@@ -114,7 +98,7 @@ public class DataService {
 
     @SneakyThrows
     void createRace(int races) {
-        final List<List<Integer>> groups = split(IntStream.range(0, races).boxed().toList(), batchSize);
+        final Collection<List<Integer>> groups = split(IntStream.range(0, races).boxed().toList(), batchSize);
         var array = groups.stream()
                 .map(g -> CompletableFuture.supplyAsync(() -> g.stream()
                         .map(t -> raceService.create(races))
@@ -124,8 +108,8 @@ public class DataService {
         CompletableFuture.allOf(array).get();
     }
 
-    static List<List<Integer>> split(List<Integer> list, int size) {
+    static Collection<List<Integer>> split(List<Integer> list, int size) {
         final Map<Integer, List<Integer>> groups = list.stream().collect(Collectors.groupingBy(s -> s / size));
-        return new ArrayList<>(groups.values());
+        return groups.values();
     }
 }
