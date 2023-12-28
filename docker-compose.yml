@@ -1,10 +1,14 @@
 services:
-  race-db:
-    image: ghcr.io/markwigmans/23cfree
+
+  db:
+    image: gvenzl/oracle-free
     environment:
-      ORACLE_PWD: oracle
+      ORACLE_RANDOM_PASSWORD: true
+      APP_USER: RACE
+      APP_USER_PASSWORD: RACE
     ports:
       - "1521:1521"
+
   mq:
     image: quay.io/artemiscloud/activemq-artemis-broker:artemis.2.28.0
     ports:

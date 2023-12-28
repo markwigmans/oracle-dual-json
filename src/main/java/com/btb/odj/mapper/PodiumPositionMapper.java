@@ -6,7 +6,7 @@ import com.btb.odj.model.mongodb.M_PodiumPosition;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
-@Mapper(config = Config.class, uses = TeamMapper.class)
+@Mapper(config = Config.class, uses = { TeamMapper.class, RaceMapper.class } )
 public interface PodiumPositionMapper {
 
     @Mapping(target = "team", source = "driver.team", qualifiedByName = {"TeamMapper", "Minimal"})

@@ -3,8 +3,8 @@
 #================================================
 spring.jpa.hibernate.ddl-auto: update
 spring.datasource.url: jdbc:oracle:thin:@localhost:1521/freepdb1
-spring.datasource.username: MARK
-spring.datasource.password: MARK
+spring.datasource.username: RACE
+spring.datasource.password: RACE
 #
 # Oracle ucp connector
 #

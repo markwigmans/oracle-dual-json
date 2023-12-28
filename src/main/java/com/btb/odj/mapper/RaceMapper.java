@@ -1,5 +1,6 @@
 package com.btb.odj.mapper;
 
+import com.btb.odj.model.elasticsearch.E_Race;
 import com.btb.odj.model.jpa.J_Race;
 import com.btb.odj.model.mongodb.M_Race;
 import com.btb.odj.repository.mongodb.M_RaceRepository;
@@ -11,7 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.Optional;
 
-@Mapper(config = Config.class, uses = PodiumPositionMapper.class)
+@Mapper(config = Config.class)
 public abstract class RaceMapper {
 
     @Autowired
@@ -26,4 +27,7 @@ public abstract class RaceMapper {
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "refId", source = "id")
     public abstract M_Race transform_J_to_M(J_Race race);
+
+    @Mapping(target = "refId", source = "id")
+    public abstract E_Race transform_J_to_E(J_Race race);
 }

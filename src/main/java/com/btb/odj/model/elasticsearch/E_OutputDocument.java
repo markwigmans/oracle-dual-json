@@ -1,12 +1,11 @@
 package com.btb.odj.model.elasticsearch;
 
-import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.elasticsearch.annotations.Document;
 
+import java.util.List;
 import java.util.UUID;
 
 /**
@@ -16,8 +15,6 @@ import java.util.UUID;
 @Document(indexName = "output")
 @Data
 @Builder
-@NoArgsConstructor
-@AllArgsConstructor
 public class E_OutputDocument {
 
     @Id
@@ -25,4 +22,5 @@ public class E_OutputDocument {
     private UUID refId;
 
     private E_Driver driver;
+    private List<E_PodiumPosition> podium;
 }

@@ -1,10 +1,12 @@
 package com.btb.odj.model.elasticsearch;
 
+import lombok.Builder;
 import lombok.Data;
 
 import java.util.UUID;
 
 @Data
+@Builder
 public class E_Driver {
 
     private UUID refId;

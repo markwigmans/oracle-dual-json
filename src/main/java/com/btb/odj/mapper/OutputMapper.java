@@ -1,19 +1,19 @@
 package com.btb.odj.mapper;
 
 import com.btb.odj.model.elasticsearch.E_OutputDocument;
+import com.btb.odj.model.elasticsearch.E_PodiumPosition;
 import com.btb.odj.model.jpa.J_Driver;
+import com.btb.odj.model.jpa.J_PodiumPosition;
 import com.btb.odj.repository.elasticsearch.E_OutputDocumentRepository;
 import lombok.extern.slf4j.Slf4j;
-import org.mapstruct.AfterMapping;
-import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
-import org.mapstruct.MappingTarget;
+import org.mapstruct.*;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.Optional;
 
-@Mapper(config = Config.class, uses = { TeamMapper.class})
+@Mapper(config = Config.class, uses = { TeamMapper.class, RaceMapper.class })
 @Slf4j
+@DecoratedWith(OutputDecorator.class)
 public abstract class OutputMapper {
 
     @Autowired
@@ -30,4 +30,7 @@ public abstract class OutputMapper {
     @Mapping(target = "refId", source = "id")
     @Mapping(target = "driver", source = "source")
     public abstract E_OutputDocument from_J_to_E(J_Driver source);
+
+    @Mapping(target = "driver", ignore = true)
+    abstract E_PodiumPosition from_J_to_E_Minimal(J_PodiumPosition podiumPosition);
 }
