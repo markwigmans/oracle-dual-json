@@ -5,16 +5,15 @@ import com.btb.odj.model.jpa.J_Race;
 import com.btb.odj.model.jpa.J_Team;
 import com.btb.odj.service.messages.EntityMessage;
 import jakarta.annotation.PostConstruct;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.jms.annotation.JmsListener;
 import org.springframework.jms.support.JmsHeaders;
 import org.springframework.messaging.handler.annotation.Header;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.support.TransactionTemplate;
-
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 @Slf4j
 abstract class AbstractDataService {
@@ -39,10 +38,12 @@ abstract class AbstractDataService {
     /**
      * Method to be called in JMSListener method. It seems that 'concurrent' is handled differently with JMS topics, therefore this approach.
      */
-    @JmsListener(destination = "#{queueConfiguration.getUpdateDataTopic()}", containerFactory = "topicConnectionFactory")
+    @JmsListener(
+            destination = "#{queueConfiguration.getUpdateDataTopic()}",
+            containerFactory = "topicConnectionFactory")
     void processMessage(EntityMessage message, @Header(JmsHeaders.MESSAGE_ID) String messageId) {
-        CompletableFuture<Void> future = CompletableFuture.runAsync(() ->
-                readOnlyTemplate.executeWithoutResult(status -> process(message)), executor);
+        CompletableFuture<Void> future = CompletableFuture.runAsync(
+                () -> readOnlyTemplate.executeWithoutResult(status -> process(message)), executor);
         future.whenComplete((r, ex) -> {
             if (ex != null) {
                 log.error("Exception", ex);

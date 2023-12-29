@@ -1,16 +1,8 @@
 package com.btb.odj.model.elasticsearch;
 
-import lombok.Builder;
-
 import java.util.UUID;
+import lombok.Builder;
 
 @Builder
 public record E_Team(
-        UUID refId,
-        String name,
-        String city,
-        String streetName,
-        String number,
-        String country,
-        int points) {
-}
+        UUID refId, String name, String city, String streetName, String number, String country, int points) {}

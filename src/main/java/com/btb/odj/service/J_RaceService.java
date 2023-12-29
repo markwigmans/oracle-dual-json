@@ -6,18 +6,17 @@ import com.btb.odj.model.jpa.J_PodiumPosition;
 import com.btb.odj.model.jpa.J_Race;
 import com.btb.odj.repository.jpa.J_RaceRepository;
 import com.github.javafaker.Faker;
+import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
+import java.util.concurrent.TimeUnit;
+import java.util.stream.IntStream;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
-import java.util.concurrent.TimeUnit;
-import java.util.stream.IntStream;
 
 @Component
 @Transactional(readOnly = true)
@@ -49,11 +48,11 @@ public class J_RaceService {
         float percentage = pointList.size() * 1000f / size;
         final List<J_Driver> winners = jDriverService.getWinners(percentage, pointList.size());
 
-        return IntStream.range(0, pointList.size()).boxed()
+        return IntStream.range(0, pointList.size())
+                .boxed()
                 .filter(i -> i < winners.size())
                 .map(i -> new J_PodiumPosition(JRace, winners.get(i), pointList.get(i), i + 1))
                 .toList();
-
     }
 
     public Optional<J_Race> findById(String id) {

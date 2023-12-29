@@ -5,7 +5,9 @@ import com.btb.odj.model.jpa.J_PodiumPosition;
 import com.btb.odj.model.mongodb.M_PodiumPosition;
 import org.mapstruct.Mapper;
 
-@Mapper(config = Config.class, uses = {TeamMapper.class, RaceMapper.class})
+@Mapper(
+        config = Config.class,
+        uses = {TeamMapper.class, RaceMapper.class})
 public interface PodiumPositionMapper {
 
     M_PodiumPosition from_J_to_M(J_PodiumPosition podiumPosition);

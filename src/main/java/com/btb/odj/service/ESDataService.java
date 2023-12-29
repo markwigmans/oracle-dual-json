@@ -7,11 +7,10 @@ import com.btb.odj.model.jpa.J_Race;
 import com.btb.odj.repository.elasticsearch.E_InputDocumentRepository;
 import com.btb.odj.repository.elasticsearch.E_OutputDocumentRepository;
 import com.btb.odj.service.messages.EntityMessage;
+import java.util.Optional;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.PlatformTransactionManager;
-
-import java.util.Optional;
 
 @Component
 @Slf4j
@@ -24,13 +23,15 @@ public class ESDataService extends AbstractDataService {
     private final OutputMapper outputMapper;
     private final InputMapper inputMapper;
 
-    public ESDataService(PlatformTransactionManager transactionManager, QueueService queueService,
-                         J_DriverService jpaDriverService,
-                         J_RaceService jpaRaceService,
-                         E_InputDocumentRepository inputDocumentRepository,
-                         E_OutputDocumentRepository outputDocumentRepository,
-                         OutputMapper outputMapper,
-                         InputMapper inputMapper) {
+    public ESDataService(
+            PlatformTransactionManager transactionManager,
+            QueueService queueService,
+            J_DriverService jpaDriverService,
+            J_RaceService jpaRaceService,
+            E_InputDocumentRepository inputDocumentRepository,
+            E_OutputDocumentRepository outputDocumentRepository,
+            OutputMapper outputMapper,
+            InputMapper inputMapper) {
         super(transactionManager, queueService);
         this.jpaDriverService = jpaDriverService;
         this.jpaRaceService = jpaRaceService;

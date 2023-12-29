@@ -3,12 +3,11 @@ package com.btb.odj.service;
 import com.btb.odj.config.QueueConfiguration;
 import com.btb.odj.model.jpa.J_AbstractEntity;
 import com.btb.odj.service.messages.EntityMessage;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.jms.core.JmsTemplate;
 import org.springframework.stereotype.Component;
-
-import java.util.List;
 
 @Component
 @RequiredArgsConstructor
@@ -24,7 +23,8 @@ public class QueueService {
 
     public void sendUpdateMessage(J_AbstractEntity entity) {
         try {
-            EntityMessage message = new EntityMessage(entity.getClass(), entity.getId().toString());
+            EntityMessage message =
+                    new EntityMessage(entity.getClass(), entity.getId().toString());
             log.debug("Sending ({}) to Topic: {}", message, queueConfiguration.getUpdateDataTopic());
             jmsTemplate.convertAndSend(queueConfiguration.getUpdateDataTopic(), message);
         } catch (Exception e) {

@@ -1,12 +1,11 @@
 package com.btb.odj.service;
 
-import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.*;
 import java.util.stream.IntStream;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import org.junit.jupiter.api.Test;
 
 class DataServiceTest {
 
@@ -20,7 +19,8 @@ class DataServiceTest {
         split.forEach(e -> assertTrue(e.size() <= blocks));
 
         Set<Integer> input = Set.copyOf(range);
-        Set<Integer> output = Set.copyOf(split.stream().flatMap(Collection::stream).toList());
+        Set<Integer> output =
+                Set.copyOf(split.stream().flatMap(Collection::stream).toList());
         assertEquals(input, output);
     }
 }

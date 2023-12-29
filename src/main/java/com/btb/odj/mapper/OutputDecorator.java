@@ -5,16 +5,16 @@ import com.btb.odj.model.jpa.J_Driver;
 import com.btb.odj.model.jpa.J_PodiumPosition;
 import com.btb.odj.model.mongodb.M_OutputDocument;
 import com.btb.odj.repository.jpa.J_RaceRepository;
+import java.util.Collection;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-
-import java.util.Collection;
 
 public abstract class OutputDecorator extends OutputMapper {
 
     @Autowired
     @Qualifier("delegate")
     private OutputMapper delegate;
+
     @Autowired
     private J_RaceRepository repository;
 
@@ -33,5 +33,4 @@ public abstract class OutputDecorator extends OutputMapper {
         dto.setPodium(races.stream().map(this::from_J_to_M_Minimal).toList());
         return dto;
     }
-
 }

@@ -3,6 +3,15 @@ package com.btb.odj.service;
 import com.btb.odj.config.DatasetConfig;
 import com.btb.odj.model.jpa.J_AbstractEntity;
 import com.btb.odj.service.messages.EntityMessage;
+import java.util.*;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.Function;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
@@ -13,16 +22,6 @@ import org.springframework.jms.annotation.JmsListener;
 import org.springframework.jms.support.JmsHeaders;
 import org.springframework.messaging.handler.annotation.Header;
 import org.springframework.stereotype.Component;
-
-import java.util.*;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.concurrent.atomic.AtomicInteger;
-import java.util.function.Function;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 
 @Component
 @RequiredArgsConstructor
@@ -103,11 +102,14 @@ public class DataService {
 
     @SneakyThrows
     void createTeams(int races) {
-        final Collection<List<Integer>> groups = split(IntStream.range(0, races).boxed().toList(), batchSize);
+        final Collection<List<Integer>> groups =
+                split(IntStream.range(0, races).boxed().toList(), batchSize);
         var array = groups.stream()
-                .map(g -> CompletableFuture.supplyAsync(() -> g.stream()
-                        .map(t -> teamService.create(config.getMaxDrivers()))
-                        .toList(), executor))
+                .map(g -> CompletableFuture.supplyAsync(
+                        () -> g.stream()
+                                .map(t -> teamService.create(config.getMaxDrivers()))
+                                .toList(),
+                        executor))
                 .toArray(CompletableFuture[]::new);
         // wait till ready
         CompletableFuture.allOf(array).get();
@@ -115,11 +117,11 @@ public class DataService {
 
     @SneakyThrows
     void createRace(int races) {
-        final Collection<List<Integer>> groups = split(IntStream.range(0, races).boxed().toList(), batchSize);
+        final Collection<List<Integer>> groups =
+                split(IntStream.range(0, races).boxed().toList(), batchSize);
         var array = groups.stream()
-                .map(g -> CompletableFuture.supplyAsync(() -> g.stream()
-                        .map(t -> raceService.create(races))
-                        .toList(), executor))
+                .map(g -> CompletableFuture.supplyAsync(
+                        () -> g.stream().map(t -> raceService.create(races)).toList(), executor))
                 .toArray(CompletableFuture[]::new);
         // wait till ready
         CompletableFuture.allOf(array).get();

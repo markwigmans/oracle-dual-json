@@ -3,16 +3,15 @@ package com.btb.odj.service;
 import com.btb.odj.model.jpa.J_Team;
 import com.btb.odj.repository.jpa.J_TeamRepository;
 import com.github.javafaker.Faker;
+import java.util.Optional;
+import java.util.UUID;
+import java.util.stream.IntStream;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.Optional;
-import java.util.UUID;
-import java.util.stream.IntStream;
 
 @Component
 @Transactional(readOnly = true)
@@ -35,7 +34,9 @@ public class J_TeamService {
                 .points(0)
                 .build());
         final int count = faker.number().numberBetween(1, maxDrivers);
-        team.setDrivers(IntStream.range(0, count).mapToObj(t -> jDriverService.create(team)).toList());
+        team.setDrivers(IntStream.range(0, count)
+                .mapToObj(t -> jDriverService.create(team))
+                .toList());
         return team;
     }
 

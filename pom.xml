@@ -17,13 +17,19 @@
     <description>oracle-dual-json</description>
     <properties>
         <java.version>17</java.version>
-        <springdoc-openapi-starter.version>2.3.0</springdoc-openapi-starter.version>
+
+        <docker.app.name>race-backend</docker.app.name>
+        <docker.app.tag>latest</docker.app.tag>
+        <docker.app.build.tag>${maven.build.timestamp}</docker.app.build.tag>
+        <docker.repo>local</docker.repo>
+
         <javafaker.version>1.0.2</javafaker.version>
         <uuid-creator.version>5.3.7</uuid-creator.version>
         <hypersistence-utils-hibernate-62.version>3.7.0</hypersistence-utils-hibernate-62.version>
         <mapstruct.version>1.5.5.Final</mapstruct.version>
         <lombok-mapstruct-binding.version>0.2.0</lombok-mapstruct-binding.version>
-        <javamelody.version>2.0.1</javamelody.version>
+        <spotless.version>2.41.1</spotless.version>
+        <palantirJavaFormat.version>2.36.0</palantirJavaFormat.version>
     </properties>
 
     <dependencies>
@@ -43,12 +49,6 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-artemis</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>net.bull.javamelody</groupId>
-            <artifactId>javamelody-spring-boot-starter</artifactId>
-            <version>${javamelody.version}</version>
         </dependency>
 
         <dependency>
@@ -142,7 +142,70 @@
                     </annotationProcessorPaths>
                 </configuration>
             </plugin>
+            <plugin>
+                <groupId>com.diffplug.spotless</groupId>
+                <artifactId>spotless-maven-plugin</artifactId>
+                <version>${spotless.version}</version>
+                <configuration>
+                    <java>
+                        <palantirJavaFormat>
+                            <style>PALANTIR</style>
+                        </palantirJavaFormat>
+                    </java>
+                </configuration>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>apply</goal>
+                        </goals>
+                        <phase>process-sources</phase>
+                    </execution>
+                </executions>
+            </plugin>
         </plugins>
     </build>
+
+    <profiles>
+        <profile>
+            <id>docker</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.springframework.boot</groupId>
+                        <artifactId>spring-boot-maven-plugin</artifactId>
+                        <configuration>
+                            <image>
+                                <name>${docker.repo}/${docker.app.name}</name>
+                                <tags>
+                                    ${docker.repo}/${docker.app.name}:${docker.app.tag}
+                                </tags>
+                                <publish>false</publish>
+                            </image>
+                        </configuration>
+                        <executions>
+                            <execution>
+                                <goals>
+                                    <goal>build-image</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+
+        <profile>
+            <id>formatter</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>com.diffplug.spotless</groupId>
+                        <artifactId>spotless-maven-plugin</artifactId>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
+
 
 </project>

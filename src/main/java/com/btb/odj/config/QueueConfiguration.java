@@ -9,6 +9,6 @@ import org.springframework.context.annotation.Configuration;
 @ConfigurationProperties(prefix = "queue")
 public class QueueConfiguration {
 
-    private final String updateDataTopic = "race-data.topic";
-    private final String processedData = "rac-data.processed";
+    private final String updateDataTopic = "raceData.topic";
+    private final String processedData = "raceData.processed";
 }

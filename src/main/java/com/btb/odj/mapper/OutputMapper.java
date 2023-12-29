@@ -8,22 +8,23 @@ import com.btb.odj.model.mongodb.M_OutputDocument;
 import com.btb.odj.model.mongodb.M_PodiumPosition;
 import com.btb.odj.repository.elasticsearch.E_OutputDocumentRepository;
 import com.btb.odj.repository.mongodb.M_OutputDocumentRepository;
+import java.util.Optional;
 import lombok.extern.slf4j.Slf4j;
 import org.mapstruct.*;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import java.util.Optional;
-
-@Mapper(config = Config.class, uses = {TeamMapper.class, RaceMapper.class})
+@Mapper(
+        config = Config.class,
+        uses = {TeamMapper.class, RaceMapper.class})
 @Slf4j
 @DecoratedWith(OutputDecorator.class)
 public abstract class OutputMapper {
 
     @Autowired
     protected E_OutputDocumentRepository esRepository;
+
     @Autowired
     protected M_OutputDocumentRepository mongodbRepository;
-
 
     @AfterMapping
     protected void fillId(J_Driver source, @MappingTarget E_OutputDocument.E_OutputDocumentBuilder target) {
@@ -42,6 +43,7 @@ public abstract class OutputMapper {
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "refId", source = "id")
     @Mapping(target = "driver", source = "source")
+    @Mapping(target = "podium", ignore = true)
     public abstract E_OutputDocument from_J_to_E(J_Driver source);
 
     @Mapping(target = "driver", ignore = true)
@@ -50,9 +52,9 @@ public abstract class OutputMapper {
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "refId", source = "id")
     @Mapping(target = "driver", source = "source")
+    @Mapping(target = "podium", ignore = true)
     public abstract M_OutputDocument from_J_to_M(J_Driver source);
 
     @Mapping(target = "driver", ignore = true)
     abstract M_PodiumPosition from_J_to_M_Minimal(J_PodiumPosition podiumPosition);
-
 }

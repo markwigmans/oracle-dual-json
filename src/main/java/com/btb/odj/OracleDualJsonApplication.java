@@ -15,5 +15,4 @@ public class OracleDualJsonApplication {
     public static void main(String[] args) {
         SpringApplication.run(OracleDualJsonApplication.class, args);
     }
-
 }

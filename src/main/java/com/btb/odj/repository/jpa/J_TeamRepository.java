@@ -7,7 +7,9 @@ import org.springframework.data.jpa.repository.Query;
 public interface J_TeamRepository extends J_AbstractRepository<J_Team> {
 
     @Modifying
-    @Query(value = """
+    @Query(
+            value =
+                    """
             UPDATE TEAM SET TEAM.POINTS = (
              SELECT sum(pp.POINTS)
              FROM PODIUM_POSITION pp
@@ -17,6 +19,7 @@ public interface J_TeamRepository extends J_AbstractRepository<J_Team> {
             WHERE team.ID IN (SELECT DISTINCT TEAM_ID
              FROM team
              JOIN DRIVER d ON d.TEAM_ID = team.ID
-             JOIN PODIUM_POSITION pp ON pp.DRIVER_ID = d.ID)""", nativeQuery = true)
+             JOIN PODIUM_POSITION pp ON pp.DRIVER_ID = d.ID)""",
+            nativeQuery = true)
     void updatePoints();
 }

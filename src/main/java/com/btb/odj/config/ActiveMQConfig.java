@@ -15,14 +15,13 @@ import org.springframework.jms.support.converter.MessageConverter;
 import org.springframework.jms.support.converter.MessageType;
 import org.springframework.jms.support.destination.DynamicDestinationResolver;
 
-
 @Configuration
 @EnableJms
 public class ActiveMQConfig {
 
     @Bean
-    public JmsListenerContainerFactory<?> topicConnectionFactory(ConnectionFactory connectionFactory,
-                                                                 DefaultJmsListenerContainerFactoryConfigurer configurer) {
+    public JmsListenerContainerFactory<?> topicConnectionFactory(
+            ConnectionFactory connectionFactory, DefaultJmsListenerContainerFactoryConfigurer configurer) {
         DefaultJmsListenerContainerFactory factory = new DefaultJmsListenerContainerFactory();
         configurer.configure(factory, connectionFactory);
         factory.setPubSubDomain(true);
@@ -30,8 +29,8 @@ public class ActiveMQConfig {
     }
 
     @Bean
-    public JmsListenerContainerFactory<?> queueConnectionFactory(ConnectionFactory connectionFactory,
-                                                                 DefaultJmsListenerContainerFactoryConfigurer configurer) {
+    public JmsListenerContainerFactory<?> queueConnectionFactory(
+            ConnectionFactory connectionFactory, DefaultJmsListenerContainerFactoryConfigurer configurer) {
         DefaultJmsListenerContainerFactory factory = new DefaultJmsListenerContainerFactory();
         configurer.configure(factory, connectionFactory);
         factory.setPubSubDomain(false);
@@ -53,11 +52,11 @@ public class ActiveMQConfig {
     public DynamicDestinationResolver destinationResolver() {
         return new DynamicDestinationResolver() {
             @Override
-            public Destination resolveDestinationName(Session session, String destinationName, boolean pubSubDomain) throws JMSException {
+            public Destination resolveDestinationName(Session session, String destinationName, boolean pubSubDomain)
+                    throws JMSException {
                 pubSubDomain = destinationName.toLowerCase().endsWith(".topic");
                 return super.resolveDestinationName(session, destinationName, pubSubDomain);
             }
         };
     }
 }
-
