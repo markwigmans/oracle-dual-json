@@ -1,11 +1,10 @@
 package com.btb.odj.model.jpa;
 
-import lombok.Builder;
-import lombok.Data;
-
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
+import lombok.Builder;
+import lombok.Data;
 
 @Data
 @Builder
