@@ -3,7 +3,7 @@ name: Release application
 on:
   push:
     branches:
-      - 'develop'
+      - 'main'
   workflow_dispatch:
 
 env:
