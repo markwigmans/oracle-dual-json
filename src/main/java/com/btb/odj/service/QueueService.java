@@ -4,6 +4,8 @@ import com.btb.odj.config.QueueConfiguration;
 import com.btb.odj.model.jpa.J_AbstractEntity;
 import com.btb.odj.service.messages.EntityMessage;
 import java.util.List;
+
+import com.btb.odj.service.messages.ProcessedMessage;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.jms.core.JmsTemplate;
@@ -32,10 +34,12 @@ public class QueueService {
         }
     }
 
-    public void sendProcessedMessage(String correlationId, EntityMessage entityMessage) {
+    public void sendProcessedMessage(Class<?> processor, String correlationId, EntityMessage entityMessage) {
         try {
             log.debug("Sending ({}) to Topic: {}", entityMessage, queueConfiguration.getProcessedData());
-            jmsTemplate.convertAndSend(queueConfiguration.getProcessedData(), entityMessage, m -> {
+            ProcessedMessage message = new ProcessedMessage(processor, entityMessage);
+
+            jmsTemplate.convertAndSend(queueConfiguration.getProcessedData(), message, m -> {
                 m.setJMSCorrelationID(correlationId);
                 return m;
             });

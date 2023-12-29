@@ -12,6 +12,8 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
+
+import com.btb.odj.service.messages.ProcessedMessage;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
@@ -37,6 +39,9 @@ public class DataService {
 
     @Value("${data.batch.size:100}")
     private int batchSize;
+
+    @Value("${data.processors:2}")
+    private int processors;
 
     private final ExecutorService executor = Executors.newWorkStealingPool();
     private final AtomicBoolean running = new AtomicBoolean(false);
@@ -81,8 +86,8 @@ public class DataService {
             destination = "#{queueConfiguration.getProcessedData()}",
             containerFactory = "queueConnectionFactory",
             concurrency = "1-5")
-    void processMessage(EntityMessage message, @Header(JmsHeaders.CORRELATION_ID) String correlationId) {
-        log.info("{} : {} : processed message: {}", counter.getAndDecrement(), correlationId, message);
+    void processMessage(ProcessedMessage message, @Header(JmsHeaders.CORRELATION_ID) String correlationId) {
+        log.info("{} : {} : processor: {} message: {}", counter.getAndDecrement(), correlationId, message.processor(), message.message());
     }
 
     private CompletableFuture<Void> broadcast(Function<PageRequest, Page<? extends J_AbstractEntity>> func) {
@@ -92,8 +97,7 @@ public class DataService {
         do {
             entiteitenPage = func.apply(pageRequest);
             final List<J_AbstractEntity> copy = Collections.unmodifiableList(entiteitenPage.getContent());
-            // TODO remove hack of hardcoded value '2'
-            counter.addAndGet(2 * copy.size());
+            counter.addAndGet(processors * copy.size());
             futures.add(CompletableFuture.runAsync(() -> queueService.sendUpdateMessage(copy), executor));
             pageRequest = pageRequest.next();
         } while (!entiteitenPage.isLast());

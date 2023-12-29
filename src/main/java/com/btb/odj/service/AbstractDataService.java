@@ -48,7 +48,7 @@ abstract class AbstractDataService {
             if (ex != null) {
                 log.error("Exception", ex);
             } else {
-                queueService.sendProcessedMessage(messageId, message);
+                queueService.sendProcessedMessage(getClass(), messageId, message);
             }
         });
     }
