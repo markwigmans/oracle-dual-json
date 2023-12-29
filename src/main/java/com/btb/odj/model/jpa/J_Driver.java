@@ -6,9 +6,6 @@ import jakarta.persistence.Table;
 import lombok.*;
 import org.apache.commons.lang3.builder.ToStringExclude;
 
-/**
- *
- */
 @Entity
 @Table(name = "Driver")
 @Builder

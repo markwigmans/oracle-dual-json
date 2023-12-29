@@ -8,9 +8,6 @@ import lombok.*;
 import org.apache.commons.lang3.builder.ToStringExclude;
 import org.hibernate.annotations.Immutable;
 
-/**
- *
- */
 @Entity
 @Table(name = "PodiumPosition", indexes = @Index(name = "idx_driver", columnList = "driver_id"))
 @Builder
