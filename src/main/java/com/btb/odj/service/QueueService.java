@@ -3,9 +3,8 @@ package com.btb.odj.service;
 import com.btb.odj.config.QueueConfiguration;
 import com.btb.odj.model.jpa.J_AbstractEntity;
 import com.btb.odj.service.messages.EntityMessage;
-import java.util.List;
-
 import com.btb.odj.service.messages.ProcessedMessage;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.jms.core.JmsTemplate;
