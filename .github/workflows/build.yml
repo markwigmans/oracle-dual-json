@@ -39,7 +39,7 @@ jobs:
       - name: Commit formatting changes
         if: steps.check_changes.outputs.changes == 'true'
         run: |
-          git config user.email "noreply@mark.nl"
+          git config user.email "noreply@github.com"
           git config user.name "Mark"
           git add .
           git commit -m "committed formatting changes"
