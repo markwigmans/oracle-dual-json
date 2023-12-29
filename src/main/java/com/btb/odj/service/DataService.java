@@ -2,7 +2,7 @@ package com.btb.odj.service;
 
 import com.btb.odj.config.DatasetConfig;
 import com.btb.odj.model.jpa.J_AbstractEntity;
-import com.btb.odj.service.messages.EntityMessage;
+import com.btb.odj.service.messages.ProcessedMessage;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutorService;
@@ -12,8 +12,6 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
-
-import com.btb.odj.service.messages.ProcessedMessage;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
@@ -87,7 +85,12 @@ public class DataService {
             containerFactory = "queueConnectionFactory",
             concurrency = "1-5")
     void processMessage(ProcessedMessage message, @Header(JmsHeaders.CORRELATION_ID) String correlationId) {
-        log.info("{} : {} : processor: {} message: {}", counter.getAndDecrement(), correlationId, message.processor(), message.message());
+        log.info(
+                "{} : {} : processor: {} message: {}",
+                counter.getAndDecrement(),
+                correlationId,
+                message.processor(),
+                message.message());
     }
 
     private CompletableFuture<Void> broadcast(Function<PageRequest, Page<? extends J_AbstractEntity>> func) {
