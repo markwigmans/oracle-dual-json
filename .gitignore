@@ -24,6 +24,5 @@ hs_err_pid*
 replay_pid*
 
 /.idea/
-/data/ords/config/databases/
-/data/ords/config/global/
 /target/
+/data/

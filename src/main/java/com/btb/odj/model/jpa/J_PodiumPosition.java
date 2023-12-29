@@ -12,22 +12,22 @@ import org.hibernate.annotations.Immutable;
  *
  */
 @Entity
-@Table(indexes = @Index(name = "idx_driver", columnList = "driver_id"))
+@Table(name = "PodiumPosition", indexes = @Index(name = "idx_driver", columnList = "driver_id"))
 @Builder
 @EqualsAndHashCode(onlyExplicitlyIncluded = true, callSuper = true)
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
 @Immutable
-public class PodiumPosition extends AbstractEntity {
+public class J_PodiumPosition extends J_AbstractEntity {
 
     @ManyToOne
     @ToStringExclude
-    private Race race;
+    private J_Race race;
 
     @ManyToOne
     @ToStringExclude
-    private Driver driver;
+    private J_Driver driver;
 
     private int points;
     private int position;

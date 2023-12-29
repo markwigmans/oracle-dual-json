@@ -1,0 +1,30 @@
+#================================================
+# Database Configurations
+#================================================
+spring.jpa.hibernate.ddl-auto: update
+spring.datasource.url: jdbc:oracle:thin:@localhost:1521/freepdb1
+spring.datasource.username: RACE
+spring.datasource.password: RACE
+#
+# Oracle ucp connector
+#
+spring.datasource.driver-class-name: oracle.jdbc.OracleDriver
+spring.datasource.type: oracle.ucp.jdbc.PoolDataSource
+spring.datasource.oracleucp.connection-factory-class-name: oracle.jdbc.pool.OracleDataSource
+spring.datasource.oracleucp.sql-for-validate-connection: select * from dual
+spring.datasource.oracleucp.connection-pool-name: connectionPoolRace
+spring.datasource.oracleucp.initial-pool-size: 15
+spring.datasource.oracleucp.min-pool-size: 10
+spring.datasource.oracleucp.max-pool-size: 30
+
+spring:
+  artemis:
+    broker-url: tcp://localhost:61616
+    user: CNL
+    password: CNL
+
+# Log JPA SQL requests
+#spring.jpa.properties.hibernate.format_sql: true
+#logging.level.org.hibernate.SQL: DEBUG
+#logging.level.org.hibernate.type.descriptor.sql.BasicBinder: TRACE
+#logging.file.name: race.log

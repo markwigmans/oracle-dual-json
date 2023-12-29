@@ -1,35 +1,33 @@
 package com.btb.odj.model.jpa;
 
-import jakarta.persistence.Column;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.Table;
+import java.util.Date;
+import java.util.List;
 import lombok.*;
 import org.apache.commons.lang3.builder.ToStringExclude;
-
-import java.util.List;
 
 /**
  *
  */
 @Entity
+@Table(name = "Race")
 @Builder
 @EqualsAndHashCode(onlyExplicitlyIncluded = true, callSuper = true)
 @NoArgsConstructor
 @AllArgsConstructor
 @Setter
 @Getter
-public class Team extends AbstractEntity {
+public class J_Race extends J_AbstractEntity {
 
     private String name;
-    private String city;
-    private String streetName;
-    @Column(name = "streetNumber", length = 20)
-    private String number;
     private String country;
+    private int laps;
+    private Date raceDate;
 
-    private int points;
-
-    @OneToMany(mappedBy = "team")
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "race")
     @ToStringExclude
-    private List<Driver> drivers;
+    private List<J_PodiumPosition> podium;
 }

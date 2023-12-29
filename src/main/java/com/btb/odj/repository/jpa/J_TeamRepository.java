@@ -1,16 +1,15 @@
-package com.btb.odj.service;
+package com.btb.odj.repository.jpa;
 
-import com.btb.odj.model.jpa.Team;
-import org.springframework.data.jpa.repository.JpaRepository;
+import com.btb.odj.model.jpa.J_Team;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 
-import java.util.UUID;
-
-public interface TeamRepository extends JpaRepository<Team, UUID> {
+public interface J_TeamRepository extends J_AbstractRepository<J_Team> {
 
     @Modifying
-    @Query(value = """
+    @Query(
+            value =
+                    """
             UPDATE TEAM SET TEAM.POINTS = (
              SELECT sum(pp.POINTS)
              FROM PODIUM_POSITION pp
@@ -20,6 +19,7 @@ public interface TeamRepository extends JpaRepository<Team, UUID> {
             WHERE team.ID IN (SELECT DISTINCT TEAM_ID
              FROM team
              JOIN DRIVER d ON d.TEAM_ID = team.ID
-             JOIN PODIUM_POSITION pp ON pp.DRIVER_ID = d.ID)""", nativeQuery = true)
+             JOIN PODIUM_POSITION pp ON pp.DRIVER_ID = d.ID)""",
+            nativeQuery = true)
     void updatePoints();
 }
