@@ -1,0 +1,52 @@
+name: Build branch
+
+on:
+  push:
+    branches-ignore:
+      - 'develop'
+      - 'main'
+
+jobs:
+  build:
+    name: Test - Unit & Integration
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v3
+        with:
+          java-version: '17'
+          distribution: 'liberica'
+          cache: 'maven'
+
+      - name: Run formatter
+        run: mvn -s $GITHUB_WORKSPACE/.github/workflows/settings.xml -B process-sources --file pom.xml -P github,formatter
+        env:
+          USER_NAME: ${{ secrets.USER_NAME }}
+          ACCESS_TOKEN: ${{ secrets.ACCESS_TOKEN }}
+
+      - name: Check for changes
+        id: check_changes
+        run: |
+          if [[ -n "$(git diff --exit-code)" ]]; then
+            echo "::set-output name=changes::true"
+          else
+            echo "::set-output name=changes::false"
+          fi
+
+      - name: Commit formatting changes
+        if: steps.check_changes.outputs.changes == 'true'
+        run: |
+          git config user.email "noreply@mark.nl"
+          git config user.name "Mark"
+          git add .
+          git commit -m "committed formatting changes"
+          git push
+
+      - name: Build with Maven
+        run: mvn -s $GITHUB_WORKSPACE/.github/workflows/settings.xml -B package --file pom.xml -P github
+        env:
+          USER_NAME: ${{ secrets.USER_NAME }}
+          ACCESS_TOKEN: ${{ secrets.ACCESS_TOKEN }}
