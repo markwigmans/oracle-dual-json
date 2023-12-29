@@ -40,7 +40,7 @@ jobs:
           BUILD_NUMBER: ${{ steps.buildnumber.outputs.build_number }}
 
       - name: Build with Maven
-        run: mvn -s $GITHUB_WORKSPACE/.github/workflows/settings.xml install -U -P docker,github -Ddocker.repo=${{ env.REGISTRY }}/${{ steps.repository_owner.outputs.lowercase }} -Ddocker.app.tag=${{ env.IMAGE_TAG }} -Ddocker.app.build.tag=${{ env.BUILD_NUMBER }}
+        run: mvn install -U -P docker -Ddocker.repo=${{ env.REGISTRY }}/${{ steps.repository_owner.outputs.lowercase }} -Ddocker.app.tag=${{ env.IMAGE_TAG }} -Ddocker.app.build.tag=${{ env.BUILD_NUMBER }}
         env:
           USER_NAME: ${{ secrets.USER_NAME }}
           ACCESS_TOKEN: ${{ secrets.ACCESS_TOKEN }}

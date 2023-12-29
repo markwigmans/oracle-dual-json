@@ -3,7 +3,6 @@ name: Build branch
 on:
   push:
     branches-ignore:
-      - 'develop'
       - 'main'
 
 jobs:
@@ -22,7 +21,7 @@ jobs:
           cache: 'maven'
 
       - name: Run formatter
-        run: mvn -s $GITHUB_WORKSPACE/.github/workflows/settings.xml -B process-sources --file pom.xml -P github,formatter
+        run: mvn -B process-sources -P formatter
         env:
           USER_NAME: ${{ secrets.USER_NAME }}
           ACCESS_TOKEN: ${{ secrets.ACCESS_TOKEN }}
@@ -40,13 +39,13 @@ jobs:
         if: steps.check_changes.outputs.changes == 'true'
         run: |
           git config user.email "noreply@github.com"
-          git config user.name "Mark"
+          git config user.name "The Builder"
           git add .
           git commit -m "committed formatting changes"
           git push
 
       - name: Build with Maven
-        run: mvn -s $GITHUB_WORKSPACE/.github/workflows/settings.xml -B package --file pom.xml -P github
+        run: mvn -B package -P github
         env:
           USER_NAME: ${{ secrets.USER_NAME }}
           ACCESS_TOKEN: ${{ secrets.ACCESS_TOKEN }}
