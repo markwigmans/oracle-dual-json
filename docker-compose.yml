@@ -10,7 +10,7 @@ services:
       - "1521:1521"
 
   mq:
-    image: quay.io/artemiscloud/activemq-artemis-broker:artemis.2.28.0
+    image: quay.io/artemiscloud/activemq-artemis-broker:artemis.2.31.2
     ports:
       - "8161:8161"
       - "61616:61616"

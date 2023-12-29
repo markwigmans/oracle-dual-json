@@ -1,13 +1,11 @@
 package com.btb.odj.model.elasticsearch;
 
-import lombok.Data;
+import lombok.Builder;
 
-@Data
-public class E_PodiumPosition {
-
-    private E_Driver driver;
-    private E_Race race;
-
-    private int points;
-    private int position;
+@Builder
+public record E_PodiumPosition(
+     E_Driver driver,
+     E_Race race,
+     int points,
+     int position) {
 }
