@@ -38,7 +38,7 @@ public class DataService {
     @Value("${data.batch.size:100}")
     private int batchSize;
 
-    @Value("${data.processors:2}")
+    @Value("${data.processors:3}")
     private int processors;
 
     private final ExecutorService executor = Executors.newWorkStealingPool();
