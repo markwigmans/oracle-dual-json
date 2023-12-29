@@ -9,11 +9,11 @@ import java.util.Date;
 import java.util.UUID;
 
 @Builder
-public record E_Race (
-     UUID refId,
-     String name,
-     String country,
-     int laps,
-    @Field(type= FieldType.Date, format= DateFormat.basic_date_time)
-     Date raceDate) {
+public record E_Race(
+        UUID refId,
+        String name,
+        String country,
+        int laps,
+        @Field(type = FieldType.Date, format = DateFormat.basic_date_time)
+        Date raceDate) {
 }

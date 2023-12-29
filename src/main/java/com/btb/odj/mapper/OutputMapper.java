@@ -14,7 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.Optional;
 
-@Mapper(config = Config.class, uses = { TeamMapper.class, RaceMapper.class })
+@Mapper(config = Config.class, uses = {TeamMapper.class, RaceMapper.class})
 @Slf4j
 @DecoratedWith(OutputDecorator.class)
 public abstract class OutputMapper {

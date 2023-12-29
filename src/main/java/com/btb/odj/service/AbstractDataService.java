@@ -3,10 +3,12 @@ package com.btb.odj.service;
 import com.btb.odj.model.jpa.J_Driver;
 import com.btb.odj.model.jpa.J_Race;
 import com.btb.odj.model.jpa.J_Team;
+import com.btb.odj.service.messages.EntityMessage;
 import jakarta.annotation.PostConstruct;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.jms.annotation.JmsListener;
-import org.springframework.messaging.Message;
+import org.springframework.jms.support.JmsHeaders;
+import org.springframework.messaging.handler.annotation.Header;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.support.TransactionTemplate;
 
@@ -18,13 +20,14 @@ import java.util.concurrent.Executors;
 abstract class AbstractDataService {
 
     private final PlatformTransactionManager transactionManager;
+    private final QueueService queueService;
 
     private TransactionTemplate readOnlyTemplate;
-    //private final ExecutorService executor = Executors.newWorkStealingPool();
-    private final ExecutorService executor = Executors.newSingleThreadExecutor();
+    private final ExecutorService executor = Executors.newWorkStealingPool();
 
-    AbstractDataService(PlatformTransactionManager transactionManager) {
+    AbstractDataService(PlatformTransactionManager transactionManager, QueueService queueService) {
         this.transactionManager = transactionManager;
+        this.queueService = queueService;
     }
 
     @PostConstruct
@@ -34,17 +37,18 @@ abstract class AbstractDataService {
     }
 
     /**
-     *
-     * Method to be called in JMSListener method. It seems that 'concurrent' is handled diffrenctly with JMS topics, therefore this approach.
+     * Method to be called in JMSListener method. It seems that 'concurrent' is handled differently with JMS topics, therefore this approach.
      */
     @JmsListener(destination = "#{queueConfiguration.getUpdateDataTopic()}", containerFactory = "topicConnectionFactory")
-    void processMessage(Message<EntityMessage> message) {
+    void processMessage(EntityMessage message, @Header(JmsHeaders.MESSAGE_ID) String messageId) {
         CompletableFuture<Void> future = CompletableFuture.runAsync(() ->
-                readOnlyTemplate.executeWithoutResult(status -> process(message.getPayload())), executor);
-        future.whenComplete((r,ex) -> {
-           if (ex != null) {
-               log.error("Exception", ex);
-           }
+                readOnlyTemplate.executeWithoutResult(status -> process(message)), executor);
+        future.whenComplete((r, ex) -> {
+            if (ex != null) {
+                log.error("Exception", ex);
+            } else {
+                queueService.sendProcessedMessage(messageId, message);
+            }
         });
     }
 

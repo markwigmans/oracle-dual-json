@@ -6,6 +6,7 @@ import com.btb.odj.model.jpa.J_Driver;
 import com.btb.odj.model.jpa.J_Race;
 import com.btb.odj.repository.mongodb.M_InputDocumentRepository;
 import com.btb.odj.repository.mongodb.M_OutputDocumentRepository;
+import com.btb.odj.service.messages.EntityMessage;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.PlatformTransactionManager;
@@ -24,13 +25,14 @@ public class MongoDataService extends AbstractDataService {
     private final InputMapper inputMapper;
 
     public MongoDataService(PlatformTransactionManager transactionManager,
+                            QueueService queueService,
                             J_DriverService jpaDriverService,
                             J_RaceService jpaRaceService,
                             M_InputDocumentRepository inputDocumentRepository,
                             M_OutputDocumentRepository outputDocumentRepository,
                             OutputMapper outputMapper,
                             InputMapper inputMapper) {
-        super(transactionManager);
+        super(transactionManager, queueService);
         this.jpaDriverService = jpaDriverService;
         this.jpaRaceService = jpaRaceService;
         this.inputDocumentRepository = inputDocumentRepository;
@@ -43,13 +45,13 @@ public class MongoDataService extends AbstractDataService {
         log.debug("processTeam : {}", message);
     }
 
-     void processDriver(EntityMessage message) {
+    void processDriver(EntityMessage message) {
         log.debug("processDriver : {}", message);
         Optional<J_Driver> driver = jpaDriverService.findById(message.id());
         driver.ifPresent(e -> outputDocumentRepository.save(outputMapper.from_J_to_M(e)));
     }
 
-     void processRace(EntityMessage message) {
+    void processRace(EntityMessage message) {
         log.debug("processRace : {}", message);
         Optional<J_Race> race = jpaRaceService.findById(message.id());
         race.ifPresent(r -> inputDocumentRepository.save(inputMapper.from_J_to_M(r)));

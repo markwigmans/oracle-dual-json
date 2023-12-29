@@ -28,7 +28,7 @@ public class E_InputDocument {
     private String name;
     private String country;
     private int laps;
-    @Field(type= FieldType.Date, format= DateFormat.basic_date_time)
+    @Field(type = FieldType.Date, format = DateFormat.basic_date_time)
     private Date raceDate;
 
     private List<E_PodiumPosition> podium;

@@ -2,12 +2,16 @@ package com.btb.odj.service;
 
 import com.btb.odj.config.DatasetConfig;
 import com.btb.odj.model.jpa.J_AbstractEntity;
+import com.btb.odj.service.messages.EntityMessage;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.jms.annotation.JmsListener;
+import org.springframework.jms.support.JmsHeaders;
+import org.springframework.messaging.handler.annotation.Header;
 import org.springframework.stereotype.Component;
 
 import java.util.*;
@@ -15,6 +19,7 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -29,6 +34,7 @@ public class DataService {
     private final J_DriverService driverService;
     private final J_RaceService raceService;
     private final QueueService queueService;
+    private final AtomicInteger counter = new AtomicInteger();
 
     @Value("${data.batch.size:100}")
     private int batchSize;
@@ -62,6 +68,7 @@ public class DataService {
     @SneakyThrows
     public void syncData() {
         log.info("Start broadcast data");
+        counter.set(0);
         List<CompletableFuture<Void>> futures = new LinkedList<>();
         futures.add(broadcast(driverService::findAll));
         futures.add(broadcast(teamService::findAll));
@@ -71,6 +78,14 @@ public class DataService {
         log.info("end broadcast data");
     }
 
+    @JmsListener(
+            destination = "#{queueConfiguration.getProcessedData()}",
+            containerFactory = "queueConnectionFactory",
+            concurrency = "1-5")
+    void processMessage(EntityMessage message, @Header(JmsHeaders.CORRELATION_ID) String correlationId) {
+        log.info("{} : {} : processed message: {}", counter.getAndDecrement(), correlationId, message);
+    }
+
     private CompletableFuture<Void> broadcast(Function<PageRequest, Page<? extends J_AbstractEntity>> func) {
         List<CompletableFuture<Void>> futures = new LinkedList<>();
         PageRequest pageRequest = PageRequest.ofSize(batchSize);
@@ -78,7 +93,9 @@ public class DataService {
         do {
             entiteitenPage = func.apply(pageRequest);
             final List<J_AbstractEntity> copy = Collections.unmodifiableList(entiteitenPage.getContent());
-            futures.add(CompletableFuture.runAsync(() -> queueService.sendUpdateMessage(copy),  executor));
+            // TODO remove hack of hardcoded value '2'
+            counter.addAndGet(2 * copy.size());
+            futures.add(CompletableFuture.runAsync(() -> queueService.sendUpdateMessage(copy), executor));
             pageRequest = pageRequest.next();
         } while (!entiteitenPage.isLast());
         return CompletableFuture.allOf(futures.toArray(CompletableFuture[]::new));

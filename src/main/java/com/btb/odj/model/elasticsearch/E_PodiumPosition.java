@@ -4,8 +4,8 @@ import lombok.Builder;
 
 @Builder
 public record E_PodiumPosition(
-     E_Driver driver,
-     E_Race race,
-     int points,
-     int position) {
+        E_Driver driver,
+        E_Race race,
+        int points,
+        int position) {
 }
