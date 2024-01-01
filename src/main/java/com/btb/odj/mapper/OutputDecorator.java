@@ -37,9 +37,9 @@ public abstract class OutputDecorator extends OutputMapper {
 
     @Override
     public J_OutputDocument from_Data_to_J(Data_Driver driver) {
-        J_OutputDocument dto = delegate.from_Data_to_J(driver);
+        J_OutputDocument.J_OutputDocumentBuilder builder = delegate.from_Data_to_J(driver).toBuilder();
         Collection<Data_PodiumPosition> races = raceRepository.findRaces(driver);
-        dto.setPodium(races.stream().map(this::from_Data_to_J_Minimal).toList());
-        return dto;
+        builder.podium(races.stream().map(this::from_Data_to_J_Minimal).toList());
+        return builder.build();
     }
 }

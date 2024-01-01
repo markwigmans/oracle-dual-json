@@ -40,8 +40,7 @@ public class JPADataService extends AbstractDataService {
             Data_InputDocumentRepository inputDocumentRepository,
             Data_OutputDocumentRepository outputDocumentRepository,
             OutputMapper outputMapper,
-            InputMapper inputMapper,
-            ObjectMapper objectMapper) {
+            InputMapper inputMapper) {
         super(transactionManager, queueService);
         this.jpaDriverService = jpaDriverService;
         this.jpaRaceService = jpaRaceService;
@@ -66,7 +65,7 @@ public class JPADataService extends AbstractDataService {
                 J_OutputDocument document = outputMapper.from_Data_to_J(e);
                 Data_OutputDocument.Data_OutputDocumentBuilder builder = Data_OutputDocument.builder();
                 builder.json(objectMapper.writeValueAsString(document));
-                builder.id(document.getId());
+                builder.id(document.id());
                 outputDocumentRepository.save(builder.build());
             } catch (JsonProcessingException ex) {
                 throw new RuntimeException(ex);
@@ -82,7 +81,7 @@ public class JPADataService extends AbstractDataService {
                 J_InputDocument document = inputMapper.from_Data_to_J(r);
                 Data_InputDocument.Data_InputDocumentBuilder builder = Data_InputDocument.builder();
                 builder.json(objectMapper.writeValueAsString(document));
-                builder.id(document.getId());
+                builder.id(document.id());
                 inputDocumentRepository.save(builder.build());
             } catch (JsonProcessingException ex) {
                 throw new RuntimeException(ex);
