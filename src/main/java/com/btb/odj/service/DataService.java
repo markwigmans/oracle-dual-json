@@ -1,7 +1,7 @@
 package com.btb.odj.service;
 
 import com.btb.odj.config.DatasetConfig;
-import com.btb.odj.model.jpa.J_AbstractEntity;
+import com.btb.odj.model.Data_AbstractEntity;
 import com.btb.odj.service.messages.ProcessedMessage;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
@@ -29,16 +29,16 @@ import org.springframework.stereotype.Component;
 public class DataService {
 
     private final DatasetConfig config;
-    private final J_TeamService teamService;
-    private final J_DriverService driverService;
-    private final J_RaceService raceService;
+    private final DataTeamService teamService;
+    private final DataDriverService driverService;
+    private final DataRaceService raceService;
     private final QueueService queueService;
     private final AtomicInteger counter = new AtomicInteger();
 
     @Value("${data.batch.size:100}")
     private int batchSize;
 
-    @Value("${data.processors:2}")
+    @Value("${data.processors:3}")
     private int processors;
 
     private final ExecutorService executor = Executors.newWorkStealingPool();
@@ -93,13 +93,13 @@ public class DataService {
                 message.message());
     }
 
-    private CompletableFuture<Void> broadcast(Function<PageRequest, Page<? extends J_AbstractEntity>> func) {
+    private CompletableFuture<Void> broadcast(Function<PageRequest, Page<? extends Data_AbstractEntity>> func) {
         List<CompletableFuture<Void>> futures = new LinkedList<>();
         PageRequest pageRequest = PageRequest.ofSize(batchSize);
-        Page<? extends J_AbstractEntity> entiteitenPage;
+        Page<? extends Data_AbstractEntity> entiteitenPage;
         do {
             entiteitenPage = func.apply(pageRequest);
-            final List<J_AbstractEntity> copy = Collections.unmodifiableList(entiteitenPage.getContent());
+            final List<Data_AbstractEntity> copy = Collections.unmodifiableList(entiteitenPage.getContent());
             counter.addAndGet(processors * copy.size());
             futures.add(CompletableFuture.runAsync(() -> queueService.sendUpdateMessage(copy), executor));
             pageRequest = pageRequest.next();

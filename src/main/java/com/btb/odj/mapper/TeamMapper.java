@@ -1,5 +1,6 @@
 package com.btb.odj.mapper;
 
+import com.btb.odj.model.Data_Team;
 import com.btb.odj.model.elasticsearch.E_Team;
 import com.btb.odj.model.jpa.J_Team;
 import com.btb.odj.model.mongodb.M_Team;
@@ -10,8 +11,11 @@ import org.mapstruct.Mapping;
 public interface TeamMapper {
 
     @Mapping(target = "refId", source = "id")
-    M_Team from_J_to_M(J_Team team);
+    M_Team from_Data_to_M(Data_Team team);
 
     @Mapping(target = "refId", source = "id")
-    E_Team from_J_to_E(J_Team team);
+    E_Team from_Data_to_E(Data_Team team);
+
+    @Mapping(target = "refId", source = "id")
+    J_Team from_Data_to_J(Data_Team team);
 }

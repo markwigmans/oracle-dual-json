@@ -1,8 +1,8 @@
 package com.btb.odj.service;
 
-import com.btb.odj.model.jpa.J_Driver;
-import com.btb.odj.model.jpa.J_Race;
-import com.btb.odj.model.jpa.J_Team;
+import com.btb.odj.model.Data_Driver;
+import com.btb.odj.model.Data_Race;
+import com.btb.odj.model.Data_Team;
 import com.btb.odj.service.messages.EntityMessage;
 import jakarta.annotation.PostConstruct;
 import java.util.concurrent.CompletableFuture;
@@ -32,7 +32,7 @@ abstract class AbstractDataService {
     @PostConstruct
     void init() {
         readOnlyTemplate = new TransactionTemplate(transactionManager);
-        readOnlyTemplate.setReadOnly(true);
+        // readOnlyTemplate.setReadOnly(true);
     }
 
     /**
@@ -54,11 +54,11 @@ abstract class AbstractDataService {
     }
 
     private void process(final EntityMessage message) {
-        if (message.type().equals(J_Driver.class)) {
+        if (message.type().equals(Data_Driver.class)) {
             processDriver(message);
-        } else if (message.type().equals(J_Team.class)) {
+        } else if (message.type().equals(Data_Team.class)) {
             processTeam(message);
-        } else if (message.type().equals(J_Race.class)) {
+        } else if (message.type().equals(Data_Race.class)) {
             processRace(message);
         } else {
             log.warn("Message({}) not processed", message);

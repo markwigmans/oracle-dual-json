@@ -1,7 +1,7 @@
 package com.btb.odj.service;
 
 import com.btb.odj.config.QueueConfiguration;
-import com.btb.odj.model.jpa.J_AbstractEntity;
+import com.btb.odj.model.Data_AbstractEntity;
 import com.btb.odj.service.messages.EntityMessage;
 import com.btb.odj.service.messages.ProcessedMessage;
 import java.util.List;
@@ -18,11 +18,11 @@ public class QueueService {
     private final JmsTemplate jmsTemplate;
     private final QueueConfiguration queueConfiguration;
 
-    public void sendUpdateMessage(List<J_AbstractEntity> entities) {
+    public void sendUpdateMessage(List<Data_AbstractEntity> entities) {
         entities.forEach(this::sendUpdateMessage);
     }
 
-    public void sendUpdateMessage(J_AbstractEntity entity) {
+    public void sendUpdateMessage(Data_AbstractEntity entity) {
         try {
             EntityMessage message =
                     new EntityMessage(entity.getClass(), entity.getId().toString());
