@@ -1,7 +1,7 @@
 package com.btb.odj.service;
 
-import com.btb.odj.model.jpa.J_Team;
-import com.btb.odj.repository.jpa.J_TeamRepository;
+import com.btb.odj.model.Data_Team;
+import com.btb.odj.repository.jpa.DataTeamRepository;
 import com.github.javafaker.Faker;
 import java.util.Optional;
 import java.util.UUID;
@@ -17,15 +17,15 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
 @Slf4j
-public class J_TeamService {
+public class DataTeamService {
 
     private final Faker faker;
-    private final J_DriverService jDriverService;
-    private final J_TeamRepository repository;
+    private final DataDriverService jDriverService;
+    private final DataTeamRepository repository;
 
     @Transactional
-    public J_Team create(int maxDrivers) {
-        J_Team team = repository.save(J_Team.builder()
+    public Data_Team create(int maxDrivers) {
+        Data_Team team = repository.save(Data_Team.builder()
                 .name(faker.company().name())
                 .city(faker.address().city())
                 .streetName(faker.address().streetName())
@@ -45,15 +45,15 @@ public class J_TeamService {
         repository.updatePoints();
     }
 
-    public Optional<J_Team> findById(String id) {
+    public Optional<Data_Team> findById(String id) {
         return findById(UUID.fromString(id));
     }
 
-    public Optional<J_Team> findById(UUID id) {
+    public Optional<Data_Team> findById(UUID id) {
         return repository.findById(id);
     }
 
-    public Page<J_Team> findAll(Pageable page) {
+    public Page<Data_Team> findAll(Pageable page) {
         return repository.findAll(page);
     }
 }

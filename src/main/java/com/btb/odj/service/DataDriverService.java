@@ -1,8 +1,8 @@
 package com.btb.odj.service;
 
-import com.btb.odj.model.jpa.J_Driver;
-import com.btb.odj.model.jpa.J_Team;
-import com.btb.odj.repository.jpa.J_DriverRepository;
+import com.btb.odj.model.Data_Driver;
+import com.btb.odj.model.Data_Team;
+import com.btb.odj.repository.jpa.DataDriverRepository;
 import com.github.javafaker.Faker;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
@@ -22,17 +22,17 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
 @Slf4j
-public class J_DriverService {
+public class DataDriverService {
 
     private final Faker faker;
-    private final J_DriverRepository repository;
+    private final DataDriverRepository repository;
 
     @PersistenceContext
     private final EntityManager entityManager;
 
     @Transactional
-    public J_Driver create(J_Team team) {
-        return repository.save(J_Driver.builder()
+    public Data_Driver create(Data_Team team) {
+        return repository.save(Data_Driver.builder()
                 .name(faker.name().name())
                 .country(faker.address().country())
                 .points(0)
@@ -40,7 +40,7 @@ public class J_DriverService {
                 .build());
     }
 
-    public List<J_Driver> getWinners(float percentage, int limit) {
+    public List<Data_Driver> getWinners(float percentage, int limit) {
         // create the query itself, because the sample parameter doesn't work as a SQL parameter
         final float perc = percentage > 10 ? 10 : percentage;
         // enforce Locale to be sure that a '.' is used as separator (otherwise we get illegal SQL errors)
@@ -49,7 +49,7 @@ public class J_DriverService {
                         Locale.US,
                         "select * from driver sample(%f) ORDER BY DBMS_RANDOM.RANDOM FETCH FIRST :limit ROWS ONLY",
                         perc),
-                J_Driver.class);
+                Data_Driver.class);
         query.setParameter("limit", limit);
         return query.getResultList();
     }
@@ -59,15 +59,15 @@ public class J_DriverService {
         repository.updatePoints();
     }
 
-    public Optional<J_Driver> findById(String id) {
+    public Optional<Data_Driver> findById(String id) {
         return findById(UUID.fromString(id));
     }
 
-    public Optional<J_Driver> findById(UUID id) {
+    public Optional<Data_Driver> findById(UUID id) {
         return repository.findById(id);
     }
 
-    public Page<J_Driver> findAll(Pageable page) {
+    public Page<Data_Driver> findAll(Pageable page) {
         return repository.findAll(page);
     }
 }

@@ -1,4 +1,4 @@
-package com.btb.odj.model.jpa;
+package com.btb.odj.model;
 
 import com.btb.odj.annotation.UuidV7Generator;
 import jakarta.persistence.Id;
@@ -7,11 +7,13 @@ import java.io.Serializable;
 import java.util.UUID;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.experimental.SuperBuilder;
 
 @MappedSuperclass
+@SuperBuilder
 @NoArgsConstructor
 @Getter
-public abstract class J_AbstractEntity implements Serializable {
+public abstract class Data_AbstractEntity implements Serializable {
 
     @Id
     @UuidV7Generator

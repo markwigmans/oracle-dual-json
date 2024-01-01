@@ -1,19 +1,20 @@
 package com.btb.odj.model.jpa;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Table;
-import lombok.AllArgsConstructor;
+import java.util.Date;
+import java.util.List;
+import java.util.UUID;
 import lombok.Builder;
-import lombok.NoArgsConstructor;
-import org.hibernate.annotations.Immutable;
+import lombok.Data;
 
-@Entity
-@Table(name = "InputDocument")
+@Data
 @Builder
-@NoArgsConstructor
-@AllArgsConstructor
-@Immutable
-public class J_InputDocument extends J_AbstractEntity {
+public class J_InputDocument {
 
-    private String data;
+    private UUID id;
+    private UUID refId;
+    private String name;
+    private String country;
+    private int laps;
+    private Date raceDate;
+    private List<J_PodiumPosition> podium;
 }

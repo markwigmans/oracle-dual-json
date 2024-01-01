@@ -1,19 +1,16 @@
 package com.btb.odj.model.jpa;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Table;
-import lombok.AllArgsConstructor;
+import java.util.List;
+import java.util.UUID;
 import lombok.Builder;
-import lombok.NoArgsConstructor;
-import org.hibernate.annotations.Immutable;
+import lombok.Data;
 
-@Entity
-@Table(name = "OutputDocument")
+@Data
 @Builder
-@NoArgsConstructor
-@AllArgsConstructor
-@Immutable
-public class J_OutputDocument extends J_AbstractEntity {
+public class J_OutputDocument {
 
-    private String data;
+    private UUID id;
+    private UUID refId;
+    private J_Driver driver;
+    private List<J_PodiumPosition> podium;
 }
