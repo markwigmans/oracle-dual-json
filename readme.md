@@ -35,13 +35,27 @@ A docker compose script is provided. Start the application with:
 
 ### Links
 
-| Item                                                     | link                              | Description                                               |
+| Item                                                     | Link                              | Description                                               |
 |----------------------------------------------------------|-----------------------------------|-----------------------------------------------------------|
 | API : add data                                           | http://localhost:8080/data/{size} | Create {size} of races. All other data is related to that |
 | API : sync data                                          | http://localhost:8180/data/sync   | Bring all data of databases in sync                       |
 | JMS management                                           | http://localhost:8161             | username/password: CNL/CNL                                |
 | [MongoDB viewer](https://hub.docker.com/_/mongo-express) | http://localhost:8081             | username/password: admin/pass                             | 
 | ElasticSearch Viewer                                     | https://elasticvue.com/           | install it as browser plugin                              |
+
+## Configuration
+
+| Configuration              | Description                                                   | Default |
+|----------------------------|---------------------------------------------------------------|--------:|
+| data.teamsMultiplier       | multiplier to race size                                       |    0.25 |
+| data.maxDrivers            | teams contains [ maxdrivers/2 - maxdriver ] drivers           |      10 |
+| data.raceMinLaps           | minimum number of possible laps                               |      40 |
+| data.raceMaxLaps           | maximum number of possible laps                               |      80 |
+| data.racePreviousDays      | race day is [ 0 - racePreviousDays ] from current day         |     365 |
+| data.batch.size            | batch size when creating data and sending data to topic/queue |         |
+| data.processed.concurrency | Number of threads reading the incoming processed queue        |         |
+
+The number of drivers, the number of laps of a given race and the race day are all generated from a random value in the given range.
 
 ## Remarks
 During the development the following remarks are made:

@@ -4,7 +4,6 @@ import com.btb.odj.model.Data_Driver;
 import com.btb.odj.model.Data_Race;
 import com.btb.odj.model.Data_Team;
 import com.btb.odj.service.messages.EntityMessage;
-import jakarta.annotation.PostConstruct;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -18,21 +17,14 @@ import org.springframework.transaction.support.TransactionTemplate;
 @Slf4j
 abstract class AbstractDataService {
 
-    private final PlatformTransactionManager transactionManager;
     private final QueueService queueService;
-
-    private TransactionTemplate readOnlyTemplate;
+    private final TransactionTemplate readOnlyTemplate;
     private final ExecutorService executor = Executors.newWorkStealingPool();
 
     AbstractDataService(PlatformTransactionManager transactionManager, QueueService queueService) {
-        this.transactionManager = transactionManager;
         this.queueService = queueService;
-    }
-
-    @PostConstruct
-    void init() {
-        readOnlyTemplate = new TransactionTemplate(transactionManager);
-        // readOnlyTemplate.setReadOnly(true);
+        this.readOnlyTemplate = new TransactionTemplate(transactionManager);
+        this.readOnlyTemplate.setReadOnly(true);
     }
 
     /**

@@ -1,5 +1,7 @@
 package com.btb.odj.service;
 
+import static org.springframework.transaction.TransactionDefinition.PROPAGATION_REQUIRES_NEW;
+
 import com.btb.odj.mapper.InputMapper;
 import com.btb.odj.mapper.OutputMapper;
 import com.btb.odj.model.Data_Driver;
@@ -19,6 +21,7 @@ import java.util.Optional;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.transaction.support.TransactionTemplate;
 
 @Component
 @Slf4j
@@ -31,6 +34,7 @@ public class JPADataService extends AbstractDataService {
     private final OutputMapper outputMapper;
     private final InputMapper inputMapper;
     private final ObjectMapper objectMapper;
+    private final TransactionTemplate readWriteTemplate;
 
     public JPADataService(
             PlatformTransactionManager transactionManager,
@@ -48,9 +52,13 @@ public class JPADataService extends AbstractDataService {
         this.outputDocumentRepository = outputDocumentRepository;
         this.outputMapper = outputMapper;
         this.inputMapper = inputMapper;
+
         this.objectMapper = new ObjectMapper()
                 .enable(SerializationFeature.INDENT_OUTPUT)
                 .setSerializationInclusion(JsonInclude.Include.NON_NULL);
+
+        this.readWriteTemplate = new TransactionTemplate(transactionManager);
+        this.readWriteTemplate.setPropagationBehavior(PROPAGATION_REQUIRES_NEW);
     }
 
     void processTeam(EntityMessage message) {
@@ -66,7 +74,7 @@ public class JPADataService extends AbstractDataService {
                 Data_OutputDocument.Data_OutputDocumentBuilder builder = Data_OutputDocument.builder();
                 builder.json(objectMapper.writeValueAsString(document));
                 builder.id(document.id());
-                outputDocumentRepository.save(builder.build());
+                readWriteTemplate.execute(status -> outputDocumentRepository.save(builder.build()));
             } catch (JsonProcessingException ex) {
                 throw new RuntimeException(ex);
             }
@@ -82,7 +90,7 @@ public class JPADataService extends AbstractDataService {
                 Data_InputDocument.Data_InputDocumentBuilder builder = Data_InputDocument.builder();
                 builder.json(objectMapper.writeValueAsString(document));
                 builder.id(document.id());
-                inputDocumentRepository.save(builder.build());
+                readWriteTemplate.execute(status -> inputDocumentRepository.save(builder.build()));
             } catch (JsonProcessingException ex) {
                 throw new RuntimeException(ex);
             }

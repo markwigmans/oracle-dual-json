@@ -38,8 +38,7 @@ public class DataService {
     @Value("${data.batch.size:100}")
     private int batchSize;
 
-    @Value("${data.processors:3}")
-    private int processors;
+    private static final int PROCESSORS = 3;
 
     private final ExecutorService executor = Executors.newWorkStealingPool();
     private final AtomicBoolean running = new AtomicBoolean(false);
@@ -83,7 +82,7 @@ public class DataService {
     @JmsListener(
             destination = "#{queueConfiguration.getProcessedData()}",
             containerFactory = "queueConnectionFactory",
-            concurrency = "1-5")
+            concurrency = "${data.processed.concurrency:1-5}")
     void processMessage(ProcessedMessage message, @Header(JmsHeaders.CORRELATION_ID) String correlationId) {
         log.info(
                 "{} : {} : processor: {} message: {}",
@@ -100,7 +99,7 @@ public class DataService {
         do {
             entiteitenPage = func.apply(pageRequest);
             final List<Data_AbstractEntity> copy = Collections.unmodifiableList(entiteitenPage.getContent());
-            counter.addAndGet(processors * copy.size());
+            counter.addAndGet(PROCESSORS * copy.size());
             futures.add(CompletableFuture.runAsync(() -> queueService.sendUpdateMessage(copy), executor));
             pageRequest = pageRequest.next();
         } while (!entiteitenPage.isLast());
