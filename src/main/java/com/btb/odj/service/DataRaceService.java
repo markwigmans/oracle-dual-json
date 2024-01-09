@@ -13,6 +13,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.stream.IntStream;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
@@ -55,6 +56,7 @@ public class DataRaceService {
                 .toList();
     }
 
+    @Cacheable("races")
     public Optional<Data_Race> findById(String id) {
         return findById(UUID.fromString(id));
     }

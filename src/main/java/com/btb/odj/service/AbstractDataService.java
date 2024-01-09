@@ -6,7 +6,6 @@ import com.btb.odj.model.Data_Team;
 import com.btb.odj.service.messages.EntityMessage;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.jms.annotation.JmsListener;
 import org.springframework.jms.support.JmsHeaders;
@@ -19,12 +18,14 @@ abstract class AbstractDataService {
 
     private final QueueService queueService;
     private final TransactionTemplate readOnlyTemplate;
-    private final ExecutorService executor = Executors.newWorkStealingPool();
+    private final ExecutorService executor;
 
-    AbstractDataService(PlatformTransactionManager transactionManager, QueueService queueService) {
+    AbstractDataService(
+            PlatformTransactionManager transactionManager, QueueService queueService, ExecutorService executor) {
         this.queueService = queueService;
         this.readOnlyTemplate = new TransactionTemplate(transactionManager);
         this.readOnlyTemplate.setReadOnly(true);
+        this.executor = executor;
     }
 
     /**
