@@ -1,8 +1,10 @@
 # Oracle Dual JSON
-Inspired by the idea of viewing a relational database from a json / noSql perspective.
+Inspired by the idea of viewing a relational database from a json / NoSQL perspective.
 
-In this demonstrator a view from [ElasticSearch](https://www.elastic.co/), [MongoDB](https://www.mongodb.com/) and [Oracle 23c](https://www.oracle.com/database/free/)
-is created using [Spring Boot](https://spring.io/projects/spring-boot/).
+In this demonstrator a view from [ElasticSearch](https://www.elastic.co/), [MongoDB](https://www.mongodb.com/) 
+and [Oracle 23c](https://www.oracle.com/database/free/) is created using [Spring Boot](https://spring.io/projects/spring-boot/).
+
+The original idea/question was 'do we have a performance improvement if we store the whole relevant data model into a JSON structure in one table/document?'.
 
 ## System Overview
 The overall system is created with the following idea in mind:
@@ -24,8 +26,8 @@ The components are:
 | MongoDB Service | Fill the MongoDB input/output document                             |                                                 
 | JPA Service     | Fill the Oracle input/output document                              | 
 
-A JMS queue is used to connect the different services. the topic 'RaceData.topic' is used to send data from 'Data Service' 
-to the database services. The queue 'RaceData.processed' is used to detect if the given topic is processed.
+A JMS queue is used to connect the different services. Topic 'RaceData.topic' is used to send data from 'Data Service' 
+to the database services. Queue 'RaceData.processed' is used to detect if the given topic is processed.
 
 ## Run Application
 
@@ -44,6 +46,7 @@ A docker compose script is provided. Start the application with:
 | ElasticSearch Viewer                                     | https://elasticvue.com/           | install it as browser plugin                              |
 
 ## Configuration
+The following application parameters can be set. This is all done via [Spring](https://docs.spring.io/spring-boot/docs/current/reference/html/features.html#features.external-config).
 
 | Configuration              | Description                                                   | Default |
 |----------------------------|---------------------------------------------------------------|--------:|
@@ -61,13 +64,23 @@ The number of drivers, the number of laps of a given race and the race day are a
 During the development the following remarks are made:
 
 ### Performance
-To improve performance loading, processing of data is done in parallel. In some high level tests I saw that performance was improved.
+To improve performance loading, processing of data is done in parallel. In some higher load tests (100.000 races and higher) 
+I noticed that performance was improved. A further investigation is needed to make this claim more concrete.
 
 ### JMS Listeners
 Spring Boot uses **@JmsListener** to read from topics and queues. However, the concurrency setting appears to have different behavior. 
 For queues if behaves as expected, more readers from the same queue. 
 For a given topic it seems  the number of concurrency queues are created, so the same message was processed in parallel without a clear performance win. 
 More investigation is need to know what exactly is going on.  
+
+### JSON Relation Duality
+The original idea was to create a demonstrator using Oracle 23c functionality 'JSON Relational Duality'. 
+The SQL directory contains some attempts on this. However, there seems to be a limitation of 4Kb per JSON record 
+and that didn't work for the given demonstrator. Therefore, it is converted to a JSON table/document approach.
+
+## TODO List
+- [ ] Dynamic Query building based on request;
+- [ ] Explicit performance measurements to support claims about performance improvements.
 
 ## Further Information
 - [JSON Relational Duality](https://github.com/oracle-samples/oracle-db-examples/blob/main/json-relational-duality/DualityViewTutorial.sql)
