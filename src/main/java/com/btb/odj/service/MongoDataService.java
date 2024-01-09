@@ -8,6 +8,7 @@ import com.btb.odj.repository.mongodb.M_InputDocumentRepository;
 import com.btb.odj.repository.mongodb.M_OutputDocumentRepository;
 import com.btb.odj.service.messages.EntityMessage;
 import java.util.Optional;
+import java.util.concurrent.ExecutorService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.PlatformTransactionManager;
@@ -31,8 +32,9 @@ public class MongoDataService extends AbstractDataService {
             M_InputDocumentRepository inputDocumentRepository,
             M_OutputDocumentRepository outputDocumentRepository,
             OutputMapper outputMapper,
-            InputMapper inputMapper) {
-        super(transactionManager, queueService);
+            InputMapper inputMapper,
+            ExecutorService executor) {
+        super(transactionManager, queueService, executor);
         this.jpaDriverService = jpaDriverService;
         this.jpaRaceService = jpaRaceService;
         this.inputDocumentRepository = inputDocumentRepository;

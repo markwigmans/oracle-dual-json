@@ -22,6 +22,7 @@ public class E_InputDocument {
     @Id
     private String id;
 
+    @Field(type = FieldType.Keyword)
     private UUID refId;
 
     private String name;

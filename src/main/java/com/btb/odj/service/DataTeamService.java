@@ -3,8 +3,6 @@ package com.btb.odj.service;
 import com.btb.odj.model.Data_Team;
 import com.btb.odj.repository.jpa.DataTeamRepository;
 import com.github.javafaker.Faker;
-import java.util.Optional;
-import java.util.UUID;
 import java.util.stream.IntStream;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -43,14 +41,6 @@ public class DataTeamService {
     @Transactional
     public void updatePoints() {
         repository.updatePoints();
-    }
-
-    public Optional<Data_Team> findById(String id) {
-        return findById(UUID.fromString(id));
-    }
-
-    public Optional<Data_Team> findById(UUID id) {
-        return repository.findById(id);
     }
 
     public Page<Data_Team> findAll(Pageable page) {

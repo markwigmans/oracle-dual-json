@@ -8,6 +8,7 @@ import java.util.Date;
 import java.util.List;
 import lombok.*;
 import org.apache.commons.lang3.builder.ToStringExclude;
+import org.hibernate.annotations.BatchSize;
 
 @Entity
 @Table(name = "Race")
@@ -26,5 +27,6 @@ public class Data_Race extends Data_AbstractEntity {
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "race")
     @ToStringExclude
+    @BatchSize(size = 10)
     private List<Data_PodiumPosition> podium;
 }

@@ -48,15 +48,16 @@ A docker compose script is provided. Start the application with:
 ## Configuration
 The following application parameters can be set. This is all done via [Spring](https://docs.spring.io/spring-boot/docs/current/reference/html/features.html#features.external-config).
 
-| Configuration              | Description                                                   | Default |
-|----------------------------|---------------------------------------------------------------|--------:|
-| data.teamsMultiplier       | multiplier to race size                                       |    0.25 |
-| data.maxDrivers            | teams contains [ maxdrivers/2 - maxdriver ] drivers           |      10 |
-| data.raceMinLaps           | minimum number of possible laps                               |      40 |
-| data.raceMaxLaps           | maximum number of possible laps                               |      80 |
-| data.racePreviousDays      | race day is [ 0 - racePreviousDays ] from current day         |     365 |
-| data.batch.size            | batch size when creating data and sending data to topic/queue |         |
-| data.processed.concurrency | Number of threads reading the incoming processed queue        |         |
+| Configuration              | Description                                                                                         | Default |
+|----------------------------|-----------------------------------------------------------------------------------------------------|--------:|
+| data.teamsMultiplier       | multiplier to race size                                                                             |    0.25 |
+| data.maxDrivers            | teams contains [ maxdrivers/2 - maxdriver ] drivers                                                 |      10 |
+| data.raceMinLaps           | minimum number of possible laps                                                                     |      40 |
+| data.raceMaxLaps           | maximum number of possible laps                                                                     |      80 |
+| data.racePreviousDays      | race day is [ 0 - racePreviousDays ] from current day                                               |     365 |
+| data.batch.size            | batch size when creating data and sending data to topic/queue                                       |         |
+| data.processed.concurrency | Number of threads reading the incoming processed queue                                              |         |
+| data.threads               | number of threads to handle topic messages. If value '**0**'sew then number of processors are taken |       0 |
 
 The number of drivers, the number of laps of a given race and the race day are all generated from a random value in the given range.
 

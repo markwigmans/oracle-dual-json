@@ -33,7 +33,8 @@ public class DataService {
     private final DataDriverService driverService;
     private final DataRaceService raceService;
     private final QueueService queueService;
-    private final AtomicInteger counter = new AtomicInteger();
+    private final AtomicInteger counter = new AtomicInteger(0);
+    private final AtomicBoolean syncStarted = new AtomicBoolean(false);
 
     @Value("${data.batch.size:100}")
     private int batchSize;
@@ -68,15 +69,25 @@ public class DataService {
 
     @SneakyThrows
     public void syncData() {
-        log.info("Start broadcast data");
-        counter.set(0);
-        List<CompletableFuture<Void>> futures = new LinkedList<>();
-        futures.add(broadcast(driverService::findAll));
-        futures.add(broadcast(teamService::findAll));
-        futures.add(broadcast(raceService::findAll));
-        // wait till ready
-        CompletableFuture.allOf(futures.toArray(CompletableFuture[]::new)).get();
-        log.info("end broadcast data");
+        if (!syncStarted.get()) {
+            log.info("Start broadcast data");
+            try {
+                counter.set(0);
+                syncStarted.compareAndSet(false, true);
+                List<CompletableFuture<Void>> futures = new LinkedList<>();
+                futures.add(broadcast(driverService::findAll));
+                futures.add(broadcast(teamService::findAll));
+                futures.add(broadcast(raceService::findAll));
+                // wait till ready
+                CompletableFuture.allOf(futures.toArray(CompletableFuture[]::new))
+                        .get();
+            } finally {
+                syncStarted.compareAndSet(true, false);
+            }
+            log.info("end broadcast data");
+        } else {
+            log.info("broadcast already started");
+        }
     }
 
     @JmsListener(
@@ -84,12 +95,11 @@ public class DataService {
             containerFactory = "queueConnectionFactory",
             concurrency = "${data.processed.concurrency:1-5}")
     void processMessage(ProcessedMessage message, @Header(JmsHeaders.CORRELATION_ID) String correlationId) {
-        log.info(
-                "{} : {} : processor: {} message: {}",
-                counter.getAndDecrement(),
-                correlationId,
-                message.processor(),
-                message.message());
+        int value = counter.getAndDecrement();
+        log.debug("{} : {} : processor: {} message: {}", value, correlationId, message.processor(), message.message());
+        if (!syncStarted.get() && (value <= 1)) {
+            log.info("All messages processed");
+        }
     }
 
     private CompletableFuture<Void> broadcast(Function<PageRequest, Page<? extends Data_AbstractEntity>> func) {

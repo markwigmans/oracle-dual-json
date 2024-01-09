@@ -18,6 +18,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import java.util.Optional;
+import java.util.concurrent.ExecutorService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.PlatformTransactionManager;
@@ -44,8 +45,9 @@ public class JPADataService extends AbstractDataService {
             Data_InputDocumentRepository inputDocumentRepository,
             Data_OutputDocumentRepository outputDocumentRepository,
             OutputMapper outputMapper,
-            InputMapper inputMapper) {
-        super(transactionManager, queueService);
+            InputMapper inputMapper,
+            ExecutorService executor) {
+        super(transactionManager, queueService, executor);
         this.jpaDriverService = jpaDriverService;
         this.jpaRaceService = jpaRaceService;
         this.inputDocumentRepository = inputDocumentRepository;
