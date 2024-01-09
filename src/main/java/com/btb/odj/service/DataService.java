@@ -47,7 +47,7 @@ public class DataService {
     public CompletableFuture<Void> createDataset(int size) {
         if (running.compareAndSet(false, true)) {
             var result = CompletableFuture.runAsync(() -> {
-                log.info("Data creation started");
+                log.info("Data creation started: {}", size);
                 createTeams((int) (size * config.getTeamsMultiplier()));
                 createRace(size);
                 driverService.updatePoints();
@@ -84,9 +84,9 @@ public class DataService {
             } finally {
                 syncStarted.compareAndSet(true, false);
             }
-            log.info("end broadcast data");
+            log.info("End broadcast data");
         } else {
-            log.info("broadcast already started");
+            log.info("Broadcast already started");
         }
     }
 
