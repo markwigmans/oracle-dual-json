@@ -19,6 +19,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import java.util.Optional;
 import java.util.concurrent.ExecutorService;
+
+import io.micrometer.core.annotation.Timed;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.PlatformTransactionManager;
@@ -67,6 +69,7 @@ public class JPADataService extends AbstractDataService {
         log.debug("processTeam : {}", message);
     }
 
+    @Timed(value = "odj.jpa.process.driver")
     void processDriver(EntityMessage message) {
         log.debug("processDriver : {}", message);
         Optional<Data_Driver> driver = jpaDriverService.findById(message.id());
@@ -83,6 +86,7 @@ public class JPADataService extends AbstractDataService {
         });
     }
 
+    @Timed(value = "odj.jpa.process.race")
     void processRace(EntityMessage message) {
         log.debug("processRace : {}", message);
         Optional<Data_Race> race = jpaRaceService.findById(message.id());

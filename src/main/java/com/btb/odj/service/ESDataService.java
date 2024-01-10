@@ -9,6 +9,8 @@ import com.btb.odj.repository.elasticsearch.E_OutputDocumentRepository;
 import com.btb.odj.service.messages.EntityMessage;
 import java.util.Optional;
 import java.util.concurrent.ExecutorService;
+
+import io.micrometer.core.annotation.Timed;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.PlatformTransactionManager;
@@ -47,12 +49,14 @@ public class ESDataService extends AbstractDataService {
         log.debug("processTeam : {}", message);
     }
 
+    @Timed(value = "odj.es.process.driver")
     void processDriver(EntityMessage message) {
         log.debug("processDriver : {}", message);
         Optional<Data_Driver> driver = jpaDriverService.findById(message.id());
         driver.ifPresent(e -> outputDocumentRepository.save(outputMapper.from_Data_to_E(e)));
     }
 
+    @Timed(value = "odj.es.process.race")
     void processRace(EntityMessage message) {
         log.debug("processRace : {}", message);
         Optional<Data_Race> race = jpaRaceService.findById(message.id());
