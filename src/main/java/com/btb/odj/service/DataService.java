@@ -15,7 +15,6 @@ import java.util.stream.IntStream;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -48,13 +47,12 @@ public class DataService {
     public CompletableFuture<Void> createDataset(int size) {
         if (running.compareAndSet(false, true)) {
             var result = CompletableFuture.runAsync(() -> {
-                final String id = RandomStringUtils.random(4);
-                log.info("Data creation started: {} : id: {}", size, id);
+                log.info("Data creation started, size:{}", size);
                 createTeams((int) (size * config.getTeamsMultiplier()));
                 createRace(size);
                 driverService.updatePoints();
                 teamService.updatePoints();
-                syncData(id);
+                syncData();
             });
             result.whenComplete((r, ex) -> {
                 running.getAndSet(false);
@@ -70,9 +68,9 @@ public class DataService {
     }
 
     @SneakyThrows
-    public void syncData(final String id) {
+    public void syncData() {
         if (!syncStarted.get()) {
-            log.info("Start broadcast data: {}", id);
+            log.info("Start broadcast data");
             try {
                 counter.set(0);
                 syncStarted.compareAndSet(false, true);
@@ -86,9 +84,9 @@ public class DataService {
             } finally {
                 syncStarted.compareAndSet(true, false);
             }
-            log.info("End broadcast data: {}", id);
+            log.info("End broadcast data");
         } else {
-            log.info("Broadcast already started: {}", id);
+            log.info("Broadcast already started");
         }
     }
 
