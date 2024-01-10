@@ -1,5 +1,7 @@
 package com.btb.odj.service;
 
+import static com.btb.odj.config.CacheConfig.CACHE_DRIVERS;
+
 import com.btb.odj.model.Data_Driver;
 import com.btb.odj.model.Data_Team;
 import com.btb.odj.repository.jpa.DataDriverRepository;
@@ -13,18 +15,18 @@ import java.util.Optional;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.cache.annotation.CacheConfig;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
-import static com.btb.odj.config.CacheConfig.CACHE_DRIVERS;
-
 @Component
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
 @Slf4j
+@CacheConfig(cacheNames = CACHE_DRIVERS)
 public class DataDriverService {
 
     private final Faker faker;
@@ -62,11 +64,12 @@ public class DataDriverService {
         repository.updatePoints();
     }
 
-    @Cacheable(value = CACHE_DRIVERS)
+    @Cacheable(unless = "#result == null")
     public Optional<Data_Driver> findById(String id) {
         return findById(UUID.fromString(id));
     }
 
+    @Cacheable(unless = "#result == null", key = "#id.toString()")
     public Optional<Data_Driver> findById(UUID id) {
         return repository.findById(id);
     }

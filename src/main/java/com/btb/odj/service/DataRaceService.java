@@ -1,5 +1,7 @@
 package com.btb.odj.service;
 
+import static com.btb.odj.config.CacheConfig.CACHE_RACES;
+
 import com.btb.odj.config.DatasetConfig;
 import com.btb.odj.model.Data_Driver;
 import com.btb.odj.model.Data_PodiumPosition;
@@ -13,18 +15,18 @@ import java.util.concurrent.TimeUnit;
 import java.util.stream.IntStream;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.cache.annotation.CacheConfig;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
-import static com.btb.odj.config.CacheConfig.CACHE_RACES;
-
 @Component
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
 @Slf4j
+@CacheConfig(cacheNames = CACHE_RACES)
 public class DataRaceService {
 
     private final Faker faker;
@@ -58,11 +60,12 @@ public class DataRaceService {
                 .toList();
     }
 
-    @Cacheable(value = CACHE_RACES)
+    @Cacheable(unless = "#result == null")
     public Optional<Data_Race> findById(String id) {
         return findById(UUID.fromString(id));
     }
 
+    @Cacheable(unless = "#result == null", key = "#id.toString()")
     public Optional<Data_Race> findById(UUID id) {
         return repository.findById(id);
     }

@@ -7,10 +7,9 @@ import com.btb.odj.model.Data_Race;
 import com.btb.odj.repository.elasticsearch.E_InputDocumentRepository;
 import com.btb.odj.repository.elasticsearch.E_OutputDocumentRepository;
 import com.btb.odj.service.messages.EntityMessage;
+import io.micrometer.core.annotation.Timed;
 import java.util.Optional;
 import java.util.concurrent.ExecutorService;
-
-import io.micrometer.core.annotation.Timed;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.PlatformTransactionManager;

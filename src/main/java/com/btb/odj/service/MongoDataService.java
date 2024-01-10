@@ -7,10 +7,9 @@ import com.btb.odj.model.Data_Race;
 import com.btb.odj.repository.mongodb.M_InputDocumentRepository;
 import com.btb.odj.repository.mongodb.M_OutputDocumentRepository;
 import com.btb.odj.service.messages.EntityMessage;
+import io.micrometer.core.annotation.Timed;
 import java.util.Optional;
 import java.util.concurrent.ExecutorService;
-
-import io.micrometer.core.annotation.Timed;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.context.event.EventListener;
@@ -46,7 +45,8 @@ public class MongoDataService extends AbstractDataService {
             M_OutputDocumentRepository outputDocumentRepository,
             OutputMapper outputMapper,
             InputMapper inputMapper,
-            ExecutorService executor, MongoTemplate mongoTemplate) {
+            ExecutorService executor,
+            MongoTemplate mongoTemplate) {
         super(transactionManager, queueService, executor);
         this.jpaDriverService = jpaDriverService;
         this.jpaRaceService = jpaRaceService;
@@ -60,14 +60,13 @@ public class MongoDataService extends AbstractDataService {
     // Indexes are not created automatically, so enforce it
     @EventListener(ContextRefreshedEvent.class)
     public void initIndicesAfterStartup() {
-        MappingContext<? extends MongoPersistentEntity<?>, MongoPersistentProperty> mappingContext = mongoTemplate
-                .getConverter().getMappingContext();
+        MappingContext<? extends MongoPersistentEntity<?>, MongoPersistentProperty> mappingContext =
+                mongoTemplate.getConverter().getMappingContext();
 
         IndexResolver resolver = new MongoPersistentEntityIndexResolver(mappingContext);
 
         // consider only entities that are annotated with @Document
-        mappingContext.getPersistentEntities()
-                .stream()
+        mappingContext.getPersistentEntities().stream()
                 .filter(it -> it.isAnnotationPresent(Document.class))
                 .forEach(it -> {
                     IndexOperations indexOps = mongoTemplate.indexOps(it.getType());
