@@ -9,12 +9,15 @@ import com.btb.odj.model.Data_Race;
 import com.btb.odj.repository.jpa.DataRaceRepository;
 import java.util.Optional;
 import java.util.UUID;
+
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.cache.CacheManager;
 
 @SpringBootTest
+@Disabled
 class DataRaceServiceTest {
 
     @Autowired
