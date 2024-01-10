@@ -4,6 +4,7 @@ import com.btb.odj.service.DataService;
 import java.util.concurrent.CompletableFuture;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -30,6 +31,6 @@ public class DataController {
 
     @GetMapping("/sync")
     public void syncData() {
-        dataService.syncData();
+        dataService.syncData(RandomStringUtils.random(10));
     }
 }

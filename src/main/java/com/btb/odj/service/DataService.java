@@ -15,6 +15,7 @@ import java.util.stream.IntStream;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -47,12 +48,13 @@ public class DataService {
     public CompletableFuture<Void> createDataset(int size) {
         if (running.compareAndSet(false, true)) {
             var result = CompletableFuture.runAsync(() -> {
-                log.info("Data creation started: {}", size);
+                final String id = RandomStringUtils.random(4);
+                log.info("Data creation started: {} : id: {}", size, id);
                 createTeams((int) (size * config.getTeamsMultiplier()));
                 createRace(size);
                 driverService.updatePoints();
                 teamService.updatePoints();
-                syncData();
+                syncData(id);
             });
             result.whenComplete((r, ex) -> {
                 running.getAndSet(false);
@@ -63,14 +65,14 @@ public class DataService {
             return result;
         } else {
             log.info("Already running");
+            return CompletableFuture.completedFuture(null);
         }
-        return CompletableFuture.completedFuture(null);
     }
 
     @SneakyThrows
-    public void syncData() {
+    public void syncData(final String id) {
         if (!syncStarted.get()) {
-            log.info("Start broadcast data");
+            log.info("Start broadcast data: {}", id);
             try {
                 counter.set(0);
                 syncStarted.compareAndSet(false, true);
@@ -84,9 +86,9 @@ public class DataService {
             } finally {
                 syncStarted.compareAndSet(true, false);
             }
-            log.info("End broadcast data");
+            log.info("End broadcast data: {}", id);
         } else {
-            log.info("Broadcast already started");
+            log.info("Broadcast already started: {}", id);
         }
     }
 
