@@ -19,6 +19,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
+import static com.btb.odj.config.CacheConfig.CACHE_DRIVERS;
+
 @Component
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
@@ -60,7 +62,7 @@ public class DataDriverService {
         repository.updatePoints();
     }
 
-    @Cacheable("drivers")
+    @Cacheable(value = CACHE_DRIVERS)
     public Optional<Data_Driver> findById(String id) {
         return findById(UUID.fromString(id));
     }

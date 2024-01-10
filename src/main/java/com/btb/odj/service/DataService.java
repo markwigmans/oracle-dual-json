@@ -36,8 +36,11 @@ public class DataService {
     private final AtomicInteger counter = new AtomicInteger(0);
     private final AtomicBoolean syncStarted = new AtomicBoolean(false);
 
-    @Value("${data.batch.size:100}")
+    @Value("${data.batch.size:1000}")
     private int batchSize;
+
+    @Value("${data.batch.message:1000}")
+    private int messageSize;
 
     private static final int PROCESSORS = 3;
 
@@ -74,10 +77,11 @@ public class DataService {
             try {
                 counter.set(0);
                 syncStarted.compareAndSet(false, true);
+
                 List<CompletableFuture<Void>> futures = new LinkedList<>();
                 futures.add(broadcast(driverService::findAll));
-                futures.add(broadcast(teamService::findAll));
                 futures.add(broadcast(raceService::findAll));
+
                 // wait till ready
                 CompletableFuture.allOf(futures.toArray(CompletableFuture[]::new))
                         .get();
@@ -97,6 +101,9 @@ public class DataService {
     void processMessage(ProcessedMessage message, @Header(JmsHeaders.CORRELATION_ID) String correlationId) {
         int value = counter.getAndDecrement();
         log.debug("{} : {} : processor: {} message: {}", value, correlationId, message.processor(), message.message());
+        if (value % messageSize == 0) {
+            log.info("To be processed: {}", value);
+        }
         if (!syncStarted.get() && (value <= 1)) {
             log.info("All messages processed");
         }

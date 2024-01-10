@@ -19,6 +19,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
+import static com.btb.odj.config.CacheConfig.CACHE_RACES;
+
 @Component
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
@@ -56,7 +58,7 @@ public class DataRaceService {
                 .toList();
     }
 
-    @Cacheable("races")
+    @Cacheable(value = CACHE_RACES)
     public Optional<Data_Race> findById(String id) {
         return findById(UUID.fromString(id));
     }

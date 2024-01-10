@@ -1,3 +1,9 @@
+#
+# Management
+#
+management.endpoints.web.exposure.include: "*"
+management.endpoints.web.exposure.exclude: "env,beans"
+
 #================================================
 # Database Configurations
 #================================================
