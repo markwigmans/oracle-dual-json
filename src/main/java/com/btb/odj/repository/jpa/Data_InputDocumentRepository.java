@@ -1,8 +1,9 @@
 package com.btb.odj.repository.jpa;
 
 import com.btb.odj.model.jpa.Data_InputDocument;
-import java.util.Optional;
 import org.springframework.data.jpa.repository.Query;
+
+import java.util.Optional;
 
 public interface Data_InputDocumentRepository extends DataAbstractRepository<Data_InputDocument> {
 

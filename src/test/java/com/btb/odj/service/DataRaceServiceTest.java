@@ -1,20 +1,20 @@
 package com.btb.odj.service;
 
-import static com.btb.odj.config.CacheConfig.CACHE_RACES;
-import static java.util.Optional.empty;
-import static java.util.Optional.ofNullable;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-
 import com.btb.odj.model.Data_Race;
 import com.btb.odj.repository.jpa.DataRaceRepository;
-import java.util.Optional;
-import java.util.UUID;
-
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.cache.CacheManager;
+
+import java.util.Optional;
+import java.util.UUID;
+
+import static com.btb.odj.config.CacheConfig.CACHE_RACES;
+import static java.util.Optional.empty;
+import static java.util.Optional.ofNullable;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @SpringBootTest
 @Disabled

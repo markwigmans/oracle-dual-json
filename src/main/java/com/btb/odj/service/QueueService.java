@@ -4,11 +4,12 @@ import com.btb.odj.config.QueueConfiguration;
 import com.btb.odj.model.Data_AbstractEntity;
 import com.btb.odj.service.messages.EntityMessage;
 import com.btb.odj.service.messages.ProcessedMessage;
-import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.jms.core.JmsTemplate;
 import org.springframework.stereotype.Component;
+
+import java.util.List;
 
 @Component
 @RequiredArgsConstructor

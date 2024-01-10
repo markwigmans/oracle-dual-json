@@ -4,8 +4,6 @@ import com.btb.odj.model.Data_Driver;
 import com.btb.odj.model.Data_Race;
 import com.btb.odj.model.Data_Team;
 import com.btb.odj.service.messages.EntityMessage;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutorService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.jms.annotation.JmsListener;
 import org.springframework.jms.support.JmsHeaders;
@@ -18,32 +16,29 @@ abstract class AbstractDataService {
 
     private final QueueService queueService;
     private final TransactionTemplate readOnlyTemplate;
-    private final ExecutorService executor;
 
     AbstractDataService(
-            PlatformTransactionManager transactionManager, QueueService queueService, ExecutorService executor) {
+            PlatformTransactionManager transactionManager, QueueService queueService) {
         this.queueService = queueService;
         this.readOnlyTemplate = new TransactionTemplate(transactionManager);
         this.readOnlyTemplate.setReadOnly(true);
-        this.executor = executor;
     }
 
     /**
-     * Method to be called in JMSListener method. It seems that 'concurrent' is handled differently with JMS topics, therefore this approach.
+     * Method to be called in JMSListener method.
      */
     @JmsListener(
             destination = "#{queueConfiguration.getUpdateDataTopic()}",
-            containerFactory = "topicConnectionFactory")
+            containerFactory = "topicConnectionFactory",
+            concurrency = "1")
     void processMessage(EntityMessage message, @Header(JmsHeaders.MESSAGE_ID) String messageId) {
-        CompletableFuture<Void> future = CompletableFuture.runAsync(
-                () -> readOnlyTemplate.executeWithoutResult(status -> process(message)), executor);
-        future.whenComplete((r, ex) -> {
-            if (ex != null) {
-                log.error("Exception", ex);
-            } else {
+        try {
+            readOnlyTemplate.executeWithoutResult(status -> process(message));
+        } catch (Exception ex) {
+            log.error("Exception", ex);
+        } finally {
                 queueService.sendProcessedMessage(getClass(), messageId, message);
             }
-        });
     }
 
     private void process(final EntityMessage message) {

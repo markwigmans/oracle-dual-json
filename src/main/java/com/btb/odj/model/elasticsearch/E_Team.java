@@ -1,7 +1,8 @@
 package com.btb.odj.model.elasticsearch;
 
-import java.util.UUID;
 import lombok.Builder;
+
+import java.util.UUID;
 
 @Builder
 public record E_Team(

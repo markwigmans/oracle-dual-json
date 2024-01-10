@@ -1,8 +1,5 @@
 package com.btb.odj.model.elasticsearch;
 
-import java.util.Date;
-import java.util.List;
-import java.util.UUID;
 import lombok.Builder;
 import lombok.Data;
 import org.springframework.data.annotation.Id;
@@ -10,6 +7,10 @@ import org.springframework.data.elasticsearch.annotations.DateFormat;
 import org.springframework.data.elasticsearch.annotations.Document;
 import org.springframework.data.elasticsearch.annotations.Field;
 import org.springframework.data.elasticsearch.annotations.FieldType;
+
+import java.util.Date;
+import java.util.List;
+import java.util.UUID;
 
 /**
  *

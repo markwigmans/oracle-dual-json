@@ -3,13 +3,14 @@ package com.btb.odj.service;
 import com.btb.odj.model.Data_Team;
 import com.btb.odj.repository.jpa.DataTeamRepository;
 import com.github.javafaker.Faker;
-import java.util.stream.IntStream;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.stream.IntStream;
 
 @Component
 @Transactional(readOnly = true)

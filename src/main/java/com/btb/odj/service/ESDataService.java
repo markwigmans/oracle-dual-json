@@ -8,11 +8,11 @@ import com.btb.odj.repository.elasticsearch.E_InputDocumentRepository;
 import com.btb.odj.repository.elasticsearch.E_OutputDocumentRepository;
 import com.btb.odj.service.messages.EntityMessage;
 import io.micrometer.core.annotation.Timed;
-import java.util.Optional;
-import java.util.concurrent.ExecutorService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.PlatformTransactionManager;
+
+import java.util.Optional;
 
 @Component
 @Slf4j
@@ -33,9 +33,8 @@ public class ESDataService extends AbstractDataService {
             E_InputDocumentRepository inputDocumentRepository,
             E_OutputDocumentRepository outputDocumentRepository,
             OutputMapper outputMapper,
-            InputMapper inputMapper,
-            ExecutorService executor) {
-        super(transactionManager, queueService, executor);
+            InputMapper inputMapper) {
+        super(transactionManager, queueService);
         this.jpaDriverService = jpaDriverService;
         this.jpaRaceService = jpaRaceService;
         this.inputDocumentRepository = inputDocumentRepository;
