@@ -48,16 +48,17 @@ A docker compose script is provided. Start the application with:
 ## Configuration
 The following application parameters can be set. This is all done via [Spring](https://docs.spring.io/spring-boot/docs/current/reference/html/features.html#features.external-config).
 
-| Configuration              | Description                                                                                         | Default |
-|----------------------------|-----------------------------------------------------------------------------------------------------|--------:|
-| data.teamsMultiplier       | multiplier to race size                                                                             |    0.25 |
-| data.maxDrivers            | teams contains [ maxdrivers/2 - maxdriver ] drivers                                                 |      10 |
-| data.raceMinLaps           | minimum number of possible laps                                                                     |      40 |
-| data.raceMaxLaps           | maximum number of possible laps                                                                     |      80 |
-| data.racePreviousDays      | race day is [ 0 - racePreviousDays ] from current day                                               |     365 |
-| data.batch.size            | batch size when creating data and sending data to topic/queue                                       |         |
-| data.processed.concurrency | Number of threads reading the incoming processed queue                                              |         |
-| data.threads               | number of threads to handle topic messages. If value '**0**'sew then number of processors are taken |       0 |
+| Configuration                  | Description                                                                                         |      Default |
+|--------------------------------|-----------------------------------------------------------------------------------------------------|-------------:|
+| odj.data.teamsMultiplier       | multiplier to race size                                                                             |         0.25 |
+| odj.data.maxDrivers            | teams contains [ maxdrivers/2 - maxdriver ] drivers                                                 |           10 |
+| odj.data.raceMinLaps           | minimum number of possible laps                                                                     |           40 |
+| odj.data.raceMaxLaps           | maximum number of possible laps                                                                     |           80 |
+| odj.data.racePreviousDays      | race day is [ 0 - racePreviousDays ] from current day                                               |          365 |
+| odj.data.batch.size            | batch size when creating data and sending data to topic/queue                                       |              |
+| odj.data.processed.concurrency | Number of threads reading the incoming processed queue                                              |              |
+| odj.data.threads               | number of threads to handle topic messages. If value '**0**'sew then number of processors are taken |            0 |
+| odj.db.providers               | List of DB providers to be used. 'es' : ElasticSearch, 'mongo' : MongoDB, 'jpa' : Oracle            | es,mongo,jpa |
 
 The number of drivers, the number of laps of a given race and the race day are all generated from a random value in the given range.
 
