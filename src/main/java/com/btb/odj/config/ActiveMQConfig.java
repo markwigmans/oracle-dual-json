@@ -24,7 +24,7 @@ import java.util.concurrent.Executor;
 @EnableJms
 public class ActiveMQConfig {
 
-    @Value("${data.threads:0}")
+    @Value("${odj.data.threads:0}")
     private int threads;
 
     @Bean(destroyMethod = "shutdown")

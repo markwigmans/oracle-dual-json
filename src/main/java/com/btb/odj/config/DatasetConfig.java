@@ -6,7 +6,7 @@ import org.springframework.context.annotation.Configuration;
 
 @Getter
 @Configuration
-@ConfigurationProperties(prefix = "data")
+@ConfigurationProperties(prefix = "odj.data")
 public class DatasetConfig {
     private final double teamsMultiplier = 0.25;
     private final int maxDrivers = 10;

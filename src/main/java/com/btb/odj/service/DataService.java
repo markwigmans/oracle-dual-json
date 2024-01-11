@@ -3,6 +3,8 @@ package com.btb.odj.service;
 import com.btb.odj.config.DatasetConfig;
 import com.btb.odj.model.Data_AbstractEntity;
 import com.btb.odj.service.messages.ProcessedMessage;
+import com.btb.odj.service.provider.ProviderProperties;
+import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
@@ -34,19 +36,26 @@ public class DataService {
     private final DataDriverService driverService;
     private final DataRaceService raceService;
     private final QueueService queueService;
+    private final ProviderProperties providerProperties;
+
     private final AtomicInteger counter = new AtomicInteger(0);
     private final AtomicBoolean syncStarted = new AtomicBoolean(false);
 
-    @Value("${data.batch.size:1000}")
+    @Value("${odj.data.batch.size:1000}")
     private int batchSize;
 
-    @Value("${data.batch.message:1000}")
+    @Value("${odj.data.batch.message:1000}")
     private int messageSize;
 
-    private static final int PROCESSORS = 3;
+    private int processors = 0;
 
     private final ExecutorService executor = Executors.newWorkStealingPool();
     private final AtomicBoolean running = new AtomicBoolean(false);
+
+    @PostConstruct
+    void init() {
+        processors = providerProperties.getProviders().size();
+    }
 
     public CompletableFuture<Void> createDataset(int size) {
         if (running.compareAndSet(false, true)) {
@@ -117,7 +126,7 @@ public class DataService {
         do {
             entiteitenPage = func.apply(pageRequest);
             final List<Data_AbstractEntity> copy = Collections.unmodifiableList(entiteitenPage.getContent());
-            counter.addAndGet(PROCESSORS * copy.size());
+            counter.addAndGet(processors * copy.size());
             futures.add(CompletableFuture.runAsync(() -> queueService.sendUpdateMessage(copy), executor));
             pageRequest = pageRequest.next();
         } while (!entiteitenPage.isLast());

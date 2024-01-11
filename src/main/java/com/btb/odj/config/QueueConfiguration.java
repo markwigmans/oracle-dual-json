@@ -6,7 +6,7 @@ import org.springframework.context.annotation.Configuration;
 
 @Getter
 @Configuration
-@ConfigurationProperties(prefix = "queue")
+@ConfigurationProperties(prefix = "odj.queue")
 public class QueueConfiguration {
 
     private final String updateDataTopic = "RaceData.topic";

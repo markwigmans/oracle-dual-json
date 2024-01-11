@@ -11,12 +11,14 @@ import com.btb.odj.model.jpa.J_OutputDocument;
 import com.btb.odj.repository.jpa.Data_InputDocumentRepository;
 import com.btb.odj.repository.jpa.Data_OutputDocumentRepository;
 import com.btb.odj.service.messages.EntityMessage;
+import com.btb.odj.service.provider.ProviderCondition;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import io.micrometer.core.annotation.Timed;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.annotation.Conditional;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.support.TransactionTemplate;
@@ -27,6 +29,7 @@ import static org.springframework.transaction.TransactionDefinition.PROPAGATION_
 
 @Component
 @Slf4j
+@Conditional(ProviderCondition.class)
 public class JPADataService extends AbstractDataService {
 
     private final DataDriverService jpaDriverService;

@@ -29,6 +29,11 @@ spring:
     user: CNL
     password: CNL
 
+#
+# Application properties
+#
+odj.db.providers: es,mongo,jpa
+
 # Log JPA SQL requests
 #spring.jpa.properties.hibernate.format_sql: true
 #logging.level.org.hibernate.SQL: DEBUG

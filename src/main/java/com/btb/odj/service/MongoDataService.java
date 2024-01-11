@@ -7,8 +7,10 @@ import com.btb.odj.model.Data_Race;
 import com.btb.odj.repository.mongodb.M_InputDocumentRepository;
 import com.btb.odj.repository.mongodb.M_OutputDocumentRepository;
 import com.btb.odj.service.messages.EntityMessage;
+import com.btb.odj.service.provider.ProviderCondition;
 import io.micrometer.core.annotation.Timed;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.annotation.Conditional;
 import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.context.event.EventListener;
 import org.springframework.data.mapping.context.MappingContext;
@@ -26,6 +28,7 @@ import java.util.Optional;
 
 @Component
 @Slf4j
+@Conditional(ProviderCondition.class)
 public class MongoDataService extends AbstractDataService {
 
     private final DataDriverService jpaDriverService;

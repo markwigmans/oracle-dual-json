@@ -9,6 +9,13 @@ services:
       SPRING_ELASTICSEARCH_URIS: "http://es:9200"
       SPRING_ARTEMIS_BROKER-URL: "tcp://mq:61616"
       SPRING_DATA_MONGODB_URI: "mongodb://mongo/test"
+      ODJ_DB_PROVIDERS: mongo
+    depends_on:
+      - db
+      - mq
+      - mongo
+      - es
+    restart: on-failure
 
   db:
     image: container-registry.oracle.com/database/free:latest

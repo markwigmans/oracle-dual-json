@@ -82,6 +82,7 @@ and that didn't work for the given demonstrator. Therefore, it is converted to a
 ## TODO List
 - [ ] Dynamic Query building based on request;
 - [ ] Explicit performance measurements to support claims about performance improvements.
+- [x] Select which DB to use (1,2 or all of them)
 
 ## Further Information
 - [JSON Relational Duality](https://github.com/oracle-samples/oracle-db-examples/blob/main/json-relational-duality/DualityViewTutorial.sql)
