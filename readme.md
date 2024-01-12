@@ -69,6 +69,9 @@ During the development the following remarks are made:
 To improve performance loading, processing of data is done in parallel. In some higher load tests (100.000 races and higher) 
 I noticed that performance was improved. A further investigation is needed to make this claim more concrete.
 
+UUIDv7 is used in the database as unique key. It is specifically designed to be used in a database context and should
+perform better than UUIDv4 (Hibernate default).
+
 ### JMS Listeners
 Spring Boot uses **@JmsListener** to read from topics and queues. However, the concurrency setting appears to have different behavior. 
 For queues if behaves as expected, more readers from the same queue. 
