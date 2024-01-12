@@ -7,53 +7,65 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.context.properties.bind.Binder;
 import org.springframework.context.annotation.Condition;
 import org.springframework.context.annotation.ConditionContext;
+import org.springframework.core.env.Environment;
 import org.springframework.core.type.AnnotatedTypeMetadata;
 
+import java.util.HashMap;
 import java.util.List;
-import java.util.Optional;
+import java.util.Map;
+import java.util.Objects;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.Collectors;
 
 @Slf4j
 public class ProviderCondition implements Condition {
-    @Override
-    public boolean matches(ConditionContext context, AnnotatedTypeMetadata metadata) {
-        ProviderProperties config = Binder.get(context.getEnvironment()).bind("odj.db",ProviderProperties.class).orElse(null);
-        if (config != null && config.getProviders() != null) {
-            Optional<Object> annotatedClass = metadata.getAnnotations().stream()
-                    .map(a -> a.getSource())
-                    .distinct()
-                    .findAny();
-            if (annotatedClass.isPresent()) {
-                if (contains(ESDataService.class, annotatedClass.get(), "se", config.getProviders())) {
-                    log.info("'{}' activated", annotatedClass.get());
-                    return true;
-                }
-                if (contains(JPADataService.class, annotatedClass.get(), "jpa", config.getProviders())) {
-                    log.info("'{}' activated", annotatedClass.get());
-                    return true;
-                }
-                if (contains(MongoDataService.class, annotatedClass.get(), "mongo", config.getProviders())) {
-                    log.info("'{}' activated", annotatedClass.get());
-                    return true;
-                } else {
-                    log.info("Class '{}' NOT activated ", annotatedClass.get());
-                }
-            }
-            else {
-                return false;
-            }
-            return false;
-        } else {
-            return false;
-        }
+
+    // the condition will be called multiple times, prevent logging multiple times.
+    final static Map<String, Boolean> LOGGED;
+    final static Map<String, String> IDENTIFIERS;
+
+    static {
+        List<Class<?>> serviceClasses = List.of(ESDataService.class, JPADataService.class, MongoDataService.class);
+        List<String> ids = List.of("es", "jpa", "mongo");
+        LOGGED = serviceClasses.stream().collect(Collectors.toMap(Class::getCanonicalName, value -> false));
+
+        IDENTIFIERS = new HashMap<>();
+        AtomicInteger index = new AtomicInteger();
+        serviceClasses.forEach(clazz -> {
+            int currentIndex = index.getAndIncrement();
+            IDENTIFIERS.put(clazz.getCanonicalName(), ids.get(currentIndex));
+        });
     }
 
-    boolean contains(Class<?> p, Object annotatedClass, String value, List<String> providers) {
-        final String clazz = annotatedClass.toString();
-        final String provider = p.getCanonicalName();
-        if (clazz.compareToIgnoreCase(provider) == 0) {
-            return providers.stream().anyMatch(value::equalsIgnoreCase);
-        } else {
+    @Override
+    public boolean matches(ConditionContext context, AnnotatedTypeMetadata metadata) {
+        Environment env = context.getEnvironment();
+        ProviderProperties config = Binder.get(env).bind("odj.db", ProviderProperties.class).orElse(null);
+
+        if (config == null || config.getProviders() == null) {
             return false;
         }
+
+        return metadata.getAnnotations().stream()
+                .map(a -> Objects.toString(a.getSource()))
+                .distinct()
+                .findAny()
+                .map(clazz -> {
+                    log.debug("Validate: '{}'", clazz);
+
+                    if (contains(clazz, config.getProviders())) {
+                        if (!LOGGED.get(clazz)) {
+                            log.info("'{}' activated", clazz);
+                            LOGGED.put(clazz, true);
+                        }
+                        return true;
+                    }
+                    return false;
+                }).orElse(false);
+    }
+
+    boolean contains(String clazz, List<String> providers) {
+        final String provider = IDENTIFIERS.get(clazz);
+        return providers.stream().anyMatch(provider::equalsIgnoreCase);
     }
 }

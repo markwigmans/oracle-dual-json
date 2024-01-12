@@ -13,6 +13,6 @@ import java.util.List;
 @ConfigurationProperties(prefix = "odj.db")
 public class ProviderProperties {
 
-    private List providers;
+    private List<String> providers;
 
 }
