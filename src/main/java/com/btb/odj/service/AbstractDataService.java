@@ -17,8 +17,7 @@ abstract class AbstractDataService {
     private final QueueService queueService;
     private final TransactionTemplate readOnlyTemplate;
 
-    AbstractDataService(
-            PlatformTransactionManager transactionManager, QueueService queueService) {
+    AbstractDataService(PlatformTransactionManager transactionManager, QueueService queueService) {
         this.queueService = queueService;
         this.readOnlyTemplate = new TransactionTemplate(transactionManager);
         this.readOnlyTemplate.setReadOnly(true);
@@ -37,8 +36,8 @@ abstract class AbstractDataService {
         } catch (Exception ex) {
             log.error("Exception", ex);
         } finally {
-                queueService.sendProcessedMessage(getClass(), messageId, message);
-            }
+            queueService.sendProcessedMessage(getClass(), messageId, message);
+        }
     }
 
     private void process(final EntityMessage message) {

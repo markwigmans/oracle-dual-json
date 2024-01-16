@@ -1,10 +1,9 @@
 package com.btb.odj.model.jpa;
 
-import lombok.Builder;
-
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
+import lombok.Builder;
 
 @Builder
 public record J_InputDocument(

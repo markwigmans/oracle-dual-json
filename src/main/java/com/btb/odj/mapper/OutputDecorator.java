@@ -6,10 +6,9 @@ import com.btb.odj.model.elasticsearch.E_OutputDocument;
 import com.btb.odj.model.jpa.J_OutputDocument;
 import com.btb.odj.model.mongodb.M_OutputDocument;
 import com.btb.odj.repository.jpa.DataRaceRepository;
+import java.util.Collection;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-
-import java.util.Collection;
 
 public abstract class OutputDecorator extends OutputMapper {
 
