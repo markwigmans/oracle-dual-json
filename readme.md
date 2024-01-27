@@ -35,14 +35,14 @@ Use the Docker Compose script to start the application:
 
 ### Links
 
-| Item                                                     | Link                                                 | Description                                               |
-|----------------------------------------------------------|------------------------------------------------------|-----------------------------------------------------------|
-| API : add data                                           | http://localhost:8080/data/{size}                    | Create {size} of races. All other data is related to that |
-| API : sync data                                          | http://localhost:8180/data/sync                      | Bring all data of databases in sync                       |
-| API : example get filter                                 | http://localhost:8180/request/driver/points/{points} | Get all drivers with >= points                            |
-| JMS management                                           | http://localhost:8161                                | username/password: CNL/CNL                                |
-| [MongoDB viewer](https://hub.docker.com/_/mongo-express) | http://localhost:8081                                | username/password: admin/pass                             | 
-| ElasticSearch Viewer                                     | https://elasticvue.com/                              | install it as browser plugin                              |
+| Item                                                     | Link                                                 | Description                                                      |
+|----------------------------------------------------------|------------------------------------------------------|------------------------------------------------------------------|
+| API : add data                                           | http://localhost:8080/data/{size}                    | Create {size} of races. All other data is related to that        |
+| API : sync data                                          | http://localhost:8180/data/sync                      | Bring all data of databases in sync                              |
+| API : example get filter                                 | http://localhost:8180/request/driver/points/{points} | Get all drivers with >= points. Result is Map<Provider, List<?>> |
+| JMS management                                           | http://localhost:8161                                | username/password: CNL/CNL                                       |
+| [MongoDB viewer](https://hub.docker.com/_/mongo-express) | http://localhost:8081                                | username/password: admin/pass                                    | 
+| ElasticSearch Viewer                                     | https://elasticvue.com/                              | install it as browser plugin                                     |
 
 ## Configuration
 Modify application parameters via [Spring](https://docs.spring.io/spring-boot/docs/current/reference/html/features.html#features.external-config).

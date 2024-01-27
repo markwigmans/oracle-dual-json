@@ -5,10 +5,8 @@ import static com.btb.odj.util.Provider.*;
 import com.btb.odj.service.ESDataService;
 import com.btb.odj.service.JPADataService;
 import com.btb.odj.service.MongoDataService;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import com.btb.odj.util.Provider;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 import lombok.extern.slf4j.Slf4j;
@@ -23,11 +21,11 @@ public class ProviderCondition implements Condition {
 
     // the condition will be called multiple times, prevent logging multiple times.
     static final Map<String, Boolean> LOGGED;
-    static final Map<String, String> IDENTIFIERS;
+    static final Map<String, Provider> IDENTIFIERS;
 
     static {
         List<Class<?>> serviceClasses = List.of(ESDataService.class, JPADataService.class, MongoDataService.class);
-        List<String> ids = List.of(ElasticSearch.label, JPA.label, MongoDB.label);
+        List<Provider> ids = List.of(ElasticSearch, JPA, MongoDB);
         LOGGED = serviceClasses.stream().collect(Collectors.toMap(Class::getCanonicalName, value -> false));
 
         IDENTIFIERS = new HashMap<>();
@@ -67,8 +65,8 @@ public class ProviderCondition implements Condition {
                 .orElse(false);
     }
 
-    boolean contains(String clazz, List<String> providers) {
-        final String provider = IDENTIFIERS.get(clazz);
-        return providers.stream().anyMatch(provider::equalsIgnoreCase);
+    boolean contains(String clazz, Collection<Provider> providers) {
+        final Provider provider = IDENTIFIERS.get(clazz);
+        return providers.contains(provider);
     }
 }
