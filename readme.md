@@ -97,7 +97,7 @@ output
 Attempts to use Oracle 23c's 'JSON Relational Duality' faced 4Kb record limitations. This led to a shift towards a JSON table/document model.
 
 ## TODO List
-- [ ] Dynamic Query building based on request;
+- [x] Dynamic Query building based on request;
 - [ ] Explicit performance measurements to support claims about performance improvements.
 - [x] Select which DB to use (1,2 or all of them)
 
