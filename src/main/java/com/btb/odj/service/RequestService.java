@@ -22,11 +22,11 @@ public class RequestService {
     @SneakyThrows
     public Map<String, List<?>> findDriversWithMoreThan(int points) {
         CompletableFuture<? extends List<?>> futureM =
-                CompletableFuture.supplyAsync(() -> mongoDataService.findDriverWithMoreThan(points));
+                CompletableFuture.supplyAsync(() -> mongoDataService.findDriversWithMoreThan(points));
         CompletableFuture<? extends List<?>> futureE =
-                CompletableFuture.supplyAsync(() -> esDataService.findDriverWithMoreThan(points));
+                CompletableFuture.supplyAsync(() -> esDataService.findDriversWithMoreThan(points));
         CompletableFuture<? extends List<?>> futureJ =
-                CompletableFuture.supplyAsync(() -> jpaDataService.findDriverWithMoreThan(points));
+                CompletableFuture.supplyAsync(() -> jpaDataService.findDriversWithMoreThan(points));
 
         CompletableFuture.allOf(futureM, futureE, futureJ).join();
         return Map.of(MongoDB.label, futureM.join(), ElasticSearch.label, futureE.join(), JPA.label, futureJ.join());
