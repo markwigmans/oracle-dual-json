@@ -59,5 +59,5 @@ abstract class AbstractDataService {
 
     abstract void processRace(EntityMessage message);
 
-    abstract List<?> findDriverWithMoreThan(int points);
+    abstract List<?> findDriversWithMoreThan(int points);
 }

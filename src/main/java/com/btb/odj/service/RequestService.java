@@ -20,7 +20,7 @@ public class RequestService {
     private final MongoDataService mongoDataService;
 
     @SneakyThrows
-    public Map<String, List<?>> findDriverWithMoreThan(int points) {
+    public Map<String, List<?>> findDriversWithMoreThan(int points) {
         CompletableFuture<? extends List<?>> futureM =
                 CompletableFuture.supplyAsync(() -> mongoDataService.findDriverWithMoreThan(points));
         CompletableFuture<? extends List<?>> futureE =

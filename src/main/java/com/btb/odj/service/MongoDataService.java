@@ -98,7 +98,7 @@ public class MongoDataService extends AbstractDataService {
     }
 
     @Override
-    List<?> findDriverWithMoreThan(int points) {
+    List<?> findDriversWithMoreThan(int points) {
         Query query = new Query();
         query.addCriteria(Criteria.where("driver.points").gte(points));
         return mongoTemplate.find(query, M_OutputDocument.class);

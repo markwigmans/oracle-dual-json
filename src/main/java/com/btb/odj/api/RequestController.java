@@ -19,7 +19,7 @@ public class RequestController {
     private final RequestService requestService;
 
     @GetMapping("/driver/points/{points}")
-    public Map<String, List<?>> findDriverWithMoreThan(@PathVariable int points) {
-        return requestService.findDriverWithMoreThan(points);
+    public Map<String, List<?>> findDriversWithMoreThan(@PathVariable int points) {
+        return requestService.findDriversWithMoreThan(points);
     }
 }

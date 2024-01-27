@@ -74,7 +74,7 @@ public class ESDataService extends AbstractDataService {
     }
 
     @Override
-    List<?> findDriverWithMoreThan(int points) {
+    List<?> findDriversWithMoreThan(int points) {
         Criteria criteria = Criteria.where("driver.points").greaterThanEqual(points);
         Query query = new CriteriaQuery(criteria);
         SearchHits<E_OutputDocument> output = searchOperations.search(query, E_OutputDocument.class);

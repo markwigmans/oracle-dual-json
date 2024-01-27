@@ -112,7 +112,7 @@ public class JPADataService extends AbstractDataService {
     }
 
     @Override
-    List<?> findDriverWithMoreThan(int points) {
+    List<?> findDriversWithMoreThan(int points) {
         String query =
                 String.format("SELECT json_query(json, '$[*]?(@.driver.points >= %d)') FROM OUTPUT_DOCUMENT", points);
 
