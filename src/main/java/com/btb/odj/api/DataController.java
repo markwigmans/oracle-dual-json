@@ -1,7 +1,6 @@
 package com.btb.odj.api;
 
 import com.btb.odj.service.DataService;
-import java.util.concurrent.CompletableFuture;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -9,8 +8,10 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.concurrent.CompletableFuture;
+
 @RestController
-@RequestMapping("data")
+@RequestMapping("/data")
 @RequiredArgsConstructor
 @Slf4j
 public class DataController {

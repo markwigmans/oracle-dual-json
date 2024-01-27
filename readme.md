@@ -75,6 +75,24 @@ For queues if behaves as expected, more readers from the same queue.
 For a given topic it seems  the number of concurrency queues are created, so the same message was processed in parallel without a clear performance win. 
 More investigation is need to know what exactly is going on.  
 
+### JSon Data
+Oracle is capable of all kinds of JSON functions, for example:
+
+```sql
+-- show all driver data is JSON format
+SELECT JSON_OBJECT('type' : 'driver', d.*)
+FROM driver d
+```
+output
+```text
+{"type":"driver","ID":"018D46231FBE747BB0790E24ABA422C4","COUNTRY":"Polen","NAME":"Mechelina Hogenes","POINTS":51,"TEAM_ID":"018D46231FBE747BB0789874A44FA1AD"}
+{"type":"driver","ID":"018D46231FCB73448C5BCE9DD9C515B2","COUNTRY":"Argentinië","NAME":"Dawn Sturme IV","POINTS":38,"TEAM_ID":"018D46231FCB73448C5A8CA242CF9F8A"}
+{"type":"driver","ID":"018D46231FCC78A896B35E0C356C352B","COUNTRY":"Benin","NAME":"Morris Hesp","POINTS":103,"TEAM_ID":"018D46231FCB73448C5A8CA242CF9F8A"}
+{"type":"driver","ID":"018D46231FCC78A896B41334341C39DA","COUNTRY":"Niger","NAME":"Luitzen de Dirksen","POINTS":55,"TEAM_ID":"018D46231FCB73448C5A8CA242CF9F8A"}
+...
+```
+
+
 ### JSON Relation Duality
 Attempts to use Oracle 23c's 'JSON Relational Duality' faced 4Kb record limitations. This led to a shift towards a JSON table/document model.
 

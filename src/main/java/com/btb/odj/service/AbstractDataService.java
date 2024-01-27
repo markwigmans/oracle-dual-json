@@ -11,6 +11,8 @@ import org.springframework.messaging.handler.annotation.Header;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.support.TransactionTemplate;
 
+import java.util.List;
+
 @Slf4j
 abstract class AbstractDataService {
 
@@ -57,4 +59,6 @@ abstract class AbstractDataService {
     abstract void processDriver(EntityMessage message);
 
     abstract void processRace(EntityMessage message);
+
+    abstract List<?> findDriverWithMoreThan(int points);
 }

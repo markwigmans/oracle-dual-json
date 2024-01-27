@@ -3,11 +3,12 @@ package com.btb.odj.model;
 import com.btb.odj.annotation.UuidV7Generator;
 import jakarta.persistence.Id;
 import jakarta.persistence.MappedSuperclass;
-import java.io.Serializable;
-import java.util.UUID;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
+
+import java.io.Serializable;
+import java.util.UUID;
 
 @MappedSuperclass
 @SuperBuilder

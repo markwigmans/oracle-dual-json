@@ -1,11 +1,12 @@
 package com.btb.odj.model.elasticsearch;
 
-import java.util.Date;
-import java.util.UUID;
 import lombok.Builder;
 import org.springframework.data.elasticsearch.annotations.DateFormat;
 import org.springframework.data.elasticsearch.annotations.Field;
 import org.springframework.data.elasticsearch.annotations.FieldType;
+
+import java.util.Date;
+import java.util.UUID;
 
 @Builder
 public record E_Race(

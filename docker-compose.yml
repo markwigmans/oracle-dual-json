@@ -9,7 +9,7 @@ services:
       SPRING_ELASTICSEARCH_URIS: "http://es:9200"
       SPRING_ARTEMIS_BROKER-URL: "tcp://mq:61616"
       SPRING_DATA_MONGODB_URI: "mongodb://mongo/test"
-      ODJ_DB_PROVIDERS: mongo
+      ODJ_DB_PROVIDERS: es,mongo,jpa
     depends_on:
       - db
       - mq
@@ -40,9 +40,6 @@ services:
     image: mongo:7
     ports:
       - "27017:27017"
-    restart: always
-    volumes:
-      - ./data/mongo:/data/db
 
   mongo-gui:
     container_name: mongo-gui

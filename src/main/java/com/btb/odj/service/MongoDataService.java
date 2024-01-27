@@ -4,12 +4,12 @@ import com.btb.odj.mapper.InputMapper;
 import com.btb.odj.mapper.OutputMapper;
 import com.btb.odj.model.Data_Driver;
 import com.btb.odj.model.Data_Race;
+import com.btb.odj.model.mongodb.M_OutputDocument;
 import com.btb.odj.repository.mongodb.M_InputDocumentRepository;
 import com.btb.odj.repository.mongodb.M_OutputDocumentRepository;
 import com.btb.odj.service.messages.EntityMessage;
 import com.btb.odj.service.provider.ProviderCondition;
 import io.micrometer.core.annotation.Timed;
-import java.util.Optional;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Conditional;
 import org.springframework.context.event.ContextRefreshedEvent;
@@ -22,8 +22,13 @@ import org.springframework.data.mongodb.core.index.MongoPersistentEntityIndexRes
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.MongoPersistentEntity;
 import org.springframework.data.mongodb.core.mapping.MongoPersistentProperty;
+import org.springframework.data.mongodb.core.query.Criteria;
+import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.PlatformTransactionManager;
+
+import java.util.List;
+import java.util.Optional;
 
 @Component
 @Slf4j
@@ -91,5 +96,12 @@ public class MongoDataService extends AbstractDataService {
         log.debug("processRace : {}", message);
         Optional<Data_Race> race = jpaRaceService.findById(message.id());
         race.ifPresent(r -> inputDocumentRepository.save(inputMapper.from_Data_to_M(r)));
+    }
+
+    @Override
+    List<?> findDriverWithMoreThan(int points) {
+        Query query = new Query();
+        query.addCriteria(Criteria.where("driver.points").gte(points));
+        return mongoTemplate.find(query, M_OutputDocument.class);
     }
 }
