@@ -4,6 +4,7 @@ import com.btb.odj.model.Data_Driver;
 import com.btb.odj.model.Data_Race;
 import com.btb.odj.model.Data_Team;
 import com.btb.odj.service.messages.EntityMessage;
+import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.jms.annotation.JmsListener;
 import org.springframework.jms.support.JmsHeaders;
@@ -57,4 +58,6 @@ abstract class AbstractDataService {
     abstract void processDriver(EntityMessage message);
 
     abstract void processRace(EntityMessage message);
+
+    abstract List<?> findDriversWithMoreThan(int points);
 }

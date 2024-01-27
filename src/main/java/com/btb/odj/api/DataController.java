@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("data")
+@RequestMapping("/data")
 @RequiredArgsConstructor
 @Slf4j
 public class DataController {

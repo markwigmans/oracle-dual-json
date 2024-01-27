@@ -1,5 +1,7 @@
 package com.btb.odj.service.provider;
 
+import static com.btb.odj.util.Provider.*;
+
 import com.btb.odj.service.ESDataService;
 import com.btb.odj.service.JPADataService;
 import com.btb.odj.service.MongoDataService;
@@ -25,7 +27,7 @@ public class ProviderCondition implements Condition {
 
     static {
         List<Class<?>> serviceClasses = List.of(ESDataService.class, JPADataService.class, MongoDataService.class);
-        List<String> ids = List.of("es", "jpa", "mongo");
+        List<String> ids = List.of(ElasticSearch.label, JPA.label, MongoDB.label);
         LOGGED = serviceClasses.stream().collect(Collectors.toMap(Class::getCanonicalName, value -> false));
 
         IDENTIFIERS = new HashMap<>();

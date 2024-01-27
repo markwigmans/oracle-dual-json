@@ -19,7 +19,12 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import io.micrometer.core.annotation.Timed;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.Query;
+import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
+import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Conditional;
 import org.springframework.stereotype.Component;
@@ -39,6 +44,7 @@ public class JPADataService extends AbstractDataService {
     private final InputMapper inputMapper;
     private final ObjectMapper objectMapper;
     private final TransactionTemplate readWriteTemplate;
+    private final EntityManager entityManager;
 
     public JPADataService(
             PlatformTransactionManager transactionManager,
@@ -48,7 +54,8 @@ public class JPADataService extends AbstractDataService {
             Data_InputDocumentRepository inputDocumentRepository,
             Data_OutputDocumentRepository outputDocumentRepository,
             OutputMapper outputMapper,
-            InputMapper inputMapper) {
+            InputMapper inputMapper,
+            EntityManager entityManager) {
         super(transactionManager, queueService);
         this.jpaDriverService = jpaDriverService;
         this.jpaRaceService = jpaRaceService;
@@ -56,6 +63,7 @@ public class JPADataService extends AbstractDataService {
         this.outputDocumentRepository = outputDocumentRepository;
         this.outputMapper = outputMapper;
         this.inputMapper = inputMapper;
+        this.entityManager = entityManager;
 
         this.objectMapper = new ObjectMapper()
                 .enable(SerializationFeature.INDENT_OUTPUT)
@@ -101,5 +109,20 @@ public class JPADataService extends AbstractDataService {
                 throw new RuntimeException(ex);
             }
         });
+    }
+
+    @Override
+    List<?> findDriversWithMoreThan(int points) {
+        String query =
+                String.format("SELECT json_query(json, '$[*]?(@.driver.points >= %d)') FROM OUTPUT_DOCUMENT", points);
+
+        Query q = entityManager.createNativeQuery(query);
+        List<String> resultList = q.getResultList();
+        return resultList.stream().filter(Objects::nonNull).map(this::transfer).toList();
+    }
+
+    @SneakyThrows
+    J_OutputDocument transfer(String json) {
+        return objectMapper.readValue(json, J_OutputDocument.class);
     }
 }
