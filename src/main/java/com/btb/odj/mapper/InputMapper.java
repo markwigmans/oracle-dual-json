@@ -8,14 +8,13 @@ import com.btb.odj.model.mongodb.M_InputDocument;
 import com.btb.odj.repository.elasticsearch.E_InputDocumentRepository;
 import com.btb.odj.repository.jpa.Data_InputDocumentRepository;
 import com.btb.odj.repository.mongodb.M_InputDocumentRepository;
+import java.util.Optional;
 import lombok.extern.slf4j.Slf4j;
 import org.mapstruct.AfterMapping;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
 import org.springframework.beans.factory.annotation.Autowired;
-
-import java.util.Optional;
 
 @Mapper(
         config = Config.class,

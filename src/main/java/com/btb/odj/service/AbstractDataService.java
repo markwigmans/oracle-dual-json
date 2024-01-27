@@ -4,14 +4,13 @@ import com.btb.odj.model.Data_Driver;
 import com.btb.odj.model.Data_Race;
 import com.btb.odj.model.Data_Team;
 import com.btb.odj.service.messages.EntityMessage;
+import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.jms.annotation.JmsListener;
 import org.springframework.jms.support.JmsHeaders;
 import org.springframework.messaging.handler.annotation.Header;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.support.TransactionTemplate;
-
-import java.util.List;
 
 @Slf4j
 abstract class AbstractDataService {

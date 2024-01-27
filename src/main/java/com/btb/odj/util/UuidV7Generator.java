@@ -1,13 +1,12 @@
 package com.btb.odj.util;
 
+import static org.hibernate.generator.EventTypeSets.INSERT_ONLY;
+
 import com.github.f4b6a3.uuid.UuidCreator;
+import java.util.EnumSet;
 import org.hibernate.engine.spi.SharedSessionContractImplementor;
 import org.hibernate.generator.BeforeExecutionGenerator;
 import org.hibernate.generator.EventType;
-
-import java.util.EnumSet;
-
-import static org.hibernate.generator.EventTypeSets.INSERT_ONLY;
 
 public class UuidV7Generator implements BeforeExecutionGenerator {
 

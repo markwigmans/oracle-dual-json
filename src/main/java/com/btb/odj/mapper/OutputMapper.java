@@ -12,11 +12,10 @@ import com.btb.odj.model.mongodb.M_PodiumPosition;
 import com.btb.odj.repository.elasticsearch.E_OutputDocumentRepository;
 import com.btb.odj.repository.jpa.Data_OutputDocumentRepository;
 import com.btb.odj.repository.mongodb.M_OutputDocumentRepository;
+import java.util.Optional;
 import lombok.extern.slf4j.Slf4j;
 import org.mapstruct.*;
 import org.springframework.beans.factory.annotation.Autowired;
-
-import java.util.Optional;
 
 @Mapper(
         config = Config.class,

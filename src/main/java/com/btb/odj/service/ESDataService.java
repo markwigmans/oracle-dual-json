@@ -10,6 +10,8 @@ import com.btb.odj.repository.elasticsearch.E_OutputDocumentRepository;
 import com.btb.odj.service.messages.EntityMessage;
 import com.btb.odj.service.provider.ProviderCondition;
 import io.micrometer.core.annotation.Timed;
+import java.util.List;
+import java.util.Optional;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Conditional;
 import org.springframework.data.elasticsearch.core.SearchHits;
@@ -19,9 +21,6 @@ import org.springframework.data.elasticsearch.core.query.CriteriaQuery;
 import org.springframework.data.elasticsearch.core.query.Query;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.PlatformTransactionManager;
-
-import java.util.List;
-import java.util.Optional;
 
 @Component
 @Slf4j

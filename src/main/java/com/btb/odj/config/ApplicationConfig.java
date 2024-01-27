@@ -1,11 +1,10 @@
 package com.btb.odj.config;
 
 import com.github.javafaker.Faker;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
-
 import java.util.Locale;
 import java.util.Random;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 
 @Configuration
 public class ApplicationConfig {

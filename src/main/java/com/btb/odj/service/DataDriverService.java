@@ -1,5 +1,7 @@
 package com.btb.odj.service;
 
+import static com.btb.odj.config.CacheConfig.CACHE_DRIVERS;
+
 import com.btb.odj.model.Data_Driver;
 import com.btb.odj.model.Data_Team;
 import com.btb.odj.repository.jpa.DataDriverRepository;
@@ -7,6 +9,10 @@ import com.github.javafaker.Faker;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.Query;
+import java.util.List;
+import java.util.Locale;
+import java.util.Optional;
+import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cache.annotation.CacheConfig;
@@ -15,13 +21,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
-import java.util.Locale;
-import java.util.Optional;
-import java.util.UUID;
-
-import static com.btb.odj.config.CacheConfig.CACHE_DRIVERS;
 
 @Component
 @Transactional(readOnly = true)
