@@ -15,7 +15,6 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import lombok.RequiredArgsConstructor;
-import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
@@ -79,7 +78,6 @@ public class DataService {
         }
     }
 
-    @SneakyThrows
     public void syncData() {
         if (!syncStarted.get()) {
             log.info("Start broadcast data");
@@ -93,7 +91,7 @@ public class DataService {
 
                 // wait till ready
                 CompletableFuture.allOf(futures.toArray(CompletableFuture[]::new))
-                        .get();
+                        .join();
             } finally {
                 syncStarted.compareAndSet(true, false);
             }
@@ -132,7 +130,6 @@ public class DataService {
         return CompletableFuture.allOf(futures.toArray(CompletableFuture[]::new));
     }
 
-    @SneakyThrows
     void createTeams(int races) {
         final Collection<List<Integer>> groups =
                 split(IntStream.range(0, races).boxed().toList(), batchSize);
@@ -144,10 +141,9 @@ public class DataService {
                         executor))
                 .toArray(CompletableFuture[]::new);
         // wait till ready
-        CompletableFuture.allOf(array).get();
+        CompletableFuture.allOf(array).join();
     }
 
-    @SneakyThrows
     void createRace(int races) {
         final Collection<List<Integer>> groups =
                 split(IntStream.range(0, races).boxed().toList(), batchSize);
@@ -156,7 +152,7 @@ public class DataService {
                         () -> g.stream().map(t -> raceService.create(races)).toList(), executor))
                 .toArray(CompletableFuture[]::new);
         // wait till ready
-        CompletableFuture.allOf(array).get();
+        CompletableFuture.allOf(array).join();
     }
 
     static Collection<List<Integer>> split(List<Integer> list, int size) {

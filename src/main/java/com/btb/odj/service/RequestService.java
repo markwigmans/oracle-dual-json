@@ -9,7 +9,6 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import lombok.RequiredArgsConstructor;
-import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
@@ -23,7 +22,6 @@ public class RequestService {
     private final Optional<MongoDataService> mongoDataService;
     private final ProviderProperties properties;
 
-    @SneakyThrows
     public Map<String, List<?>> findDriversWithMoreThan(int points) {
         final var futureM = properties.isActive(MongoDB)
                 ? CompletableFuture.supplyAsync(() -> mongoDataService.get().findDriversWithMoreThan(points))
