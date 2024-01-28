@@ -29,7 +29,7 @@ for status updates.
 
 ## Running the Application
 
-Use the Docker Compose script to start the application:
+Use the Docker Compose script to start the application (in the environments/docker directory):
 
 ``docker compose up -d``
 
