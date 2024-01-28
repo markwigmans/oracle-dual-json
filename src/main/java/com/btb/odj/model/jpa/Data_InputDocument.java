@@ -1,6 +1,7 @@
 package com.btb.odj.model.jpa;
 
 import com.btb.odj.model.Data_AbstractEntity;
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
 import lombok.NoArgsConstructor;
@@ -15,5 +16,6 @@ import org.hibernate.type.SqlTypes;
 public class Data_InputDocument extends Data_AbstractEntity {
 
     @JdbcTypeCode(SqlTypes.JSON)
+    @Column(name = "json_data", nullable = false)
     private String json;
 }

@@ -15,7 +15,6 @@ import com.btb.odj.repository.jpa.Data_OutputDocumentRepository;
 import com.btb.odj.service.messages.EntityMessage;
 import com.btb.odj.service.provider.ProviderCondition;
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import io.micrometer.core.annotation.Timed;
@@ -82,16 +81,18 @@ public class JPADataService extends AbstractDataService {
         log.debug("processDriver : {}", message);
         Optional<Data_Driver> driver = jpaDriverService.findById(message.id());
         driver.ifPresent(e -> {
-            try {
-                J_OutputDocument document = outputMapper.from_Data_to_J(e);
-                Data_OutputDocument.Data_OutputDocumentBuilder builder = Data_OutputDocument.builder();
-                builder.json(objectMapper.writeValueAsString(document));
-                builder.id(document.id());
-                readWriteTemplate.execute(status -> outputDocumentRepository.save(builder.build()));
-            } catch (JsonProcessingException ex) {
-                throw new RuntimeException(ex);
-            }
+            Data_OutputDocument document = transform(e);
+            readWriteTemplate.execute(status -> outputDocumentRepository.save(document));
         });
+    }
+
+    @SneakyThrows
+    Data_OutputDocument transform(Data_Driver driver) {
+        J_OutputDocument document = outputMapper.from_Data_to_J(driver);
+        Data_OutputDocument.Data_OutputDocumentBuilder<?, ?> builder = Data_OutputDocument.builder();
+        builder.json(objectMapper.writeValueAsString(document));
+        builder.id(document.id());
+        return builder.build();
     }
 
     @Timed(value = "odj.jpa.process.race")
@@ -99,16 +100,18 @@ public class JPADataService extends AbstractDataService {
         log.debug("processRace : {}", message);
         Optional<Data_Race> race = jpaRaceService.findById(message.id());
         race.ifPresent(r -> {
-            try {
-                J_InputDocument document = inputMapper.from_Data_to_J(r);
-                Data_InputDocument.Data_InputDocumentBuilder builder = Data_InputDocument.builder();
-                builder.json(objectMapper.writeValueAsString(document));
-                builder.id(document.id());
-                readWriteTemplate.execute(status -> inputDocumentRepository.save(builder.build()));
-            } catch (JsonProcessingException ex) {
-                throw new RuntimeException(ex);
-            }
+            Data_InputDocument document = transform(r);
+            readWriteTemplate.execute(status -> inputDocumentRepository.save(document));
         });
+    }
+
+    @SneakyThrows
+    Data_InputDocument transform(Data_Race race) {
+        J_InputDocument document = inputMapper.from_Data_to_J(race);
+        Data_InputDocument.Data_InputDocumentBuilder<?, ?> builder = Data_InputDocument.builder();
+        builder.json(objectMapper.writeValueAsString(document));
+        builder.id(document.id());
+        return builder.build();
     }
 
     @Override
