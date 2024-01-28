@@ -83,14 +83,12 @@ public class MongoDataService extends AbstractDataService {
         log.debug("processTeam : {}", message);
     }
 
-    @Timed(value = "odj.mongodb.process.driver")
     void processDriver(EntityMessage message) {
         log.debug("processDriver : {}", message);
         Optional<Data_Driver> driver = jpaDriverService.findById(message.id());
         driver.ifPresent(e -> outputDocumentRepository.save(outputMapper.from_Data_to_M(e)));
     }
 
-    @Timed(value = "odj.mongodb.process.race")
     void processRace(EntityMessage message) {
         log.debug("processRace : {}", message);
         Optional<Data_Race> race = jpaRaceService.findById(message.id());

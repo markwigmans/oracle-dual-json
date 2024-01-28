@@ -76,7 +76,6 @@ public class JPADataService extends AbstractDataService {
         log.debug("processTeam : {}", message);
     }
 
-    @Timed(value = "odj.jpa.process.driver")
     void processDriver(EntityMessage message) {
         log.debug("processDriver : {}", message);
         Optional<Data_Driver> driver = jpaDriverService.findById(message.id());
@@ -95,7 +94,6 @@ public class JPADataService extends AbstractDataService {
         return builder.build();
     }
 
-    @Timed(value = "odj.jpa.process.race")
     void processRace(EntityMessage message) {
         log.debug("processRace : {}", message);
         Optional<Data_Race> race = jpaRaceService.findById(message.id());

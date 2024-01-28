@@ -1,6 +1,7 @@
 package com.btb.odj.api;
 
 import com.btb.odj.service.DataService;
+import io.micrometer.observation.annotation.Observed;
 import java.util.concurrent.CompletableFuture;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -18,6 +19,7 @@ public class DataController {
     private final DataService dataService;
 
     @GetMapping("/{count}")
+    @Observed(name = "odj.data.create")
     public void createRaces(@PathVariable int count) {
         CompletableFuture<Void> dataset = dataService.createDataset(count);
         dataset.whenComplete((r, ex) -> {
@@ -29,6 +31,7 @@ public class DataController {
     }
 
     @GetMapping("/sync")
+    @Observed(name = "odj.data.sync")
     public void syncData() {
         dataService.syncData();
     }
