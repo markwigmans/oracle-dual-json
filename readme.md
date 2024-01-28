@@ -78,6 +78,11 @@ For queues if behaves as expected, more readers from the same queue.
 For a given topic it seems  the number of concurrency queues are created, so the same message was processed in parallel without a clear performance win. 
 More investigation is need to know what exactly is going on.  
 
+### Process Multiple Messages
+In an attempt to process multiple message, a new type 'EntityMessages' was created, which contained a list of EntityMessage. In this way
+a processor could handle multiple messages at the time. However, I constantly got 'Illegal pop() with non-matching JdbcValuesSourceProcessingState'
+exceptions, as if no real seperated transaction was created. Not clear how to solve that, so I keep the current 1 message at the time approach (which to work).
+
 ### JSON Relation Duality
 Attempts to use Oracle 23c's 'JSON Relational Duality' faced 4Kb record limitations. This led to a shift towards a JSON table/document model.
 
