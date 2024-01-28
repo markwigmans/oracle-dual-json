@@ -43,6 +43,8 @@ Use the Docker Compose script to start the application:
 | JMS management                                           | http://localhost:8161                                | username/password: CNL/CNL                                       |
 | [MongoDB viewer](https://hub.docker.com/_/mongo-express) | http://localhost:8081                                | username/password: admin/pass                                    | 
 | ElasticSearch Viewer                                     | https://elasticvue.com/                              | install it as browser plugin                                     |
+| MetricsVisualisation [Grafana](https://grafana.com/)     | http://localhost:3000/                               | username/password: admin/admin                                   |
+| Metrics server [Prometheus](https://prometheus.io/)      | http://localhost:9090/                               |                                                                  |                                
 
 ## Configuration
 Modify application parameters via [Spring](https://docs.spring.io/spring-boot/docs/current/reference/html/features.html#features.external-config).
