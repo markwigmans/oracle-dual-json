@@ -39,11 +39,8 @@ public class DataService {
     private final AtomicInteger counter = new AtomicInteger(0);
     private final AtomicBoolean syncStarted = new AtomicBoolean(false);
 
-    @Value("${odj.data.batch.size:1000}")
+    @Value("${odj.data.batch.size:100}")
     private int batchSize;
-
-    @Value("${odj.data.batch.message:1000}")
-    private int messageSize;
 
     private int processors = 0;
 
@@ -105,12 +102,15 @@ public class DataService {
             destination = "#{queueConfiguration.getProcessedData()}",
             containerFactory = "queueConnectionFactory",
             concurrency = "${ojd.data.processed.concurrency:1-5}")
-    void processMessage(ProcessedMessage message, @Header(JmsHeaders.CORRELATION_ID) String correlationId) {
-        int value = counter.getAndDecrement();
-        log.debug("{} : {} : processor: {} message: {}", value, correlationId, message.processor(), message.message());
-        if (value % messageSize == 0) {
-            log.info("To be processed: {}", value);
-        }
+    void processMessage(ProcessedMessage pm, @Header(JmsHeaders.CORRELATION_ID) String correlationId) {
+        int value = counter.addAndGet(-pm.message().messages().size());
+        log.debug(
+                "{} : {} : processor: {} message: {}",
+                value,
+                correlationId,
+                pm.processor(),
+                pm.message().messages().size());
+        log.info("To be processed: {}", value);
         if (!syncStarted.get() && (value <= 1)) {
             log.info("All messages processed");
         }

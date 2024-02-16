@@ -12,12 +12,11 @@ import com.btb.odj.model.jpa.J_InputDocument;
 import com.btb.odj.model.jpa.J_OutputDocument;
 import com.btb.odj.repository.jpa.Data_InputDocumentRepository;
 import com.btb.odj.repository.jpa.Data_OutputDocumentRepository;
-import com.btb.odj.service.messages.EntityMessage;
+import com.btb.odj.service.messages.EntityMessages;
 import com.btb.odj.service.provider.ProviderCondition;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
-import io.micrometer.core.annotation.Timed;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.Query;
 import java.util.List;
@@ -42,11 +41,9 @@ public class JPADataService extends AbstractDataService {
     private final OutputMapper outputMapper;
     private final InputMapper inputMapper;
     private final ObjectMapper objectMapper;
-    private final TransactionTemplate readWriteTemplate;
     private final EntityManager entityManager;
 
     public JPADataService(
-            PlatformTransactionManager transactionManager,
             QueueService queueService,
             DataDriverService jpaDriverService,
             DataRaceService jpaRaceService,
@@ -55,7 +52,7 @@ public class JPADataService extends AbstractDataService {
             OutputMapper outputMapper,
             InputMapper inputMapper,
             EntityManager entityManager) {
-        super(transactionManager, queueService);
+        super(queueService);
         this.jpaDriverService = jpaDriverService;
         this.jpaRaceService = jpaRaceService;
         this.inputDocumentRepository = inputDocumentRepository;
@@ -67,22 +64,20 @@ public class JPADataService extends AbstractDataService {
         this.objectMapper = new ObjectMapper()
                 .enable(SerializationFeature.INDENT_OUTPUT)
                 .setSerializationInclusion(JsonInclude.Include.NON_NULL);
-
-        this.readWriteTemplate = new TransactionTemplate(transactionManager);
-        this.readWriteTemplate.setPropagationBehavior(PROPAGATION_REQUIRES_NEW);
     }
 
-    void processTeam(EntityMessage message) {
-        log.debug("processTeam : {}", message);
+    void processTeam(EntityMessages message) {
+        log.debug("processTeam : {}", message.messages().size());
     }
 
-    void processDriver(EntityMessage message) {
-        log.debug("processDriver : {}", message);
-        Optional<Data_Driver> driver = jpaDriverService.findById(message.id());
-        driver.ifPresent(e -> {
-            Data_OutputDocument document = transform(e);
-            readWriteTemplate.execute(status -> outputDocumentRepository.save(document));
-        });
+    void processDriver(EntityMessages message) {
+        List<Data_OutputDocument> docs = message.messages().stream()
+                .map(msg -> jpaDriverService.findById(msg.id()))
+                .filter(Optional::isPresent)
+                .map(Optional::get)
+                .map(this::transform)
+                .toList();
+        outputDocumentRepository.saveAll(docs);
     }
 
     @SneakyThrows
@@ -94,13 +89,14 @@ public class JPADataService extends AbstractDataService {
         return builder.build();
     }
 
-    void processRace(EntityMessage message) {
-        log.debug("processRace : {}", message);
-        Optional<Data_Race> race = jpaRaceService.findById(message.id());
-        race.ifPresent(r -> {
-            Data_InputDocument document = transform(r);
-            readWriteTemplate.execute(status -> inputDocumentRepository.save(document));
-        });
+    void processRace(EntityMessages message) {
+        List<Data_InputDocument> docs = message.messages().stream()
+                .map(msg -> jpaRaceService.findById(msg.id()))
+                .filter(Optional::isPresent)
+                .map(Optional::get)
+                .map(this::transform)
+                .toList();
+        inputDocumentRepository.saveAll(docs);
     }
 
     @SneakyThrows

@@ -2,14 +2,12 @@ package com.btb.odj.service;
 
 import com.btb.odj.mapper.InputMapper;
 import com.btb.odj.mapper.OutputMapper;
-import com.btb.odj.model.Data_Driver;
-import com.btb.odj.model.Data_Race;
+import com.btb.odj.model.elasticsearch.E_InputDocument;
 import com.btb.odj.model.elasticsearch.E_OutputDocument;
 import com.btb.odj.repository.elasticsearch.E_InputDocumentRepository;
 import com.btb.odj.repository.elasticsearch.E_OutputDocumentRepository;
-import com.btb.odj.service.messages.EntityMessage;
+import com.btb.odj.service.messages.EntityMessages;
 import com.btb.odj.service.provider.ProviderCondition;
-import io.micrometer.core.annotation.Timed;
 import java.util.List;
 import java.util.Optional;
 import lombok.extern.slf4j.Slf4j;
@@ -20,7 +18,6 @@ import org.springframework.data.elasticsearch.core.query.Criteria;
 import org.springframework.data.elasticsearch.core.query.CriteriaQuery;
 import org.springframework.data.elasticsearch.core.query.Query;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.PlatformTransactionManager;
 
 @Component
 @Slf4j
@@ -36,7 +33,6 @@ public class ESDataService extends AbstractDataService {
     private final SearchOperations searchOperations;
 
     public ESDataService(
-            PlatformTransactionManager transactionManager,
             QueueService queueService,
             DataDriverService jpaDriverService,
             DataRaceService jpaRaceService,
@@ -45,7 +41,7 @@ public class ESDataService extends AbstractDataService {
             OutputMapper outputMapper,
             InputMapper inputMapper,
             SearchOperations searchOperations) {
-        super(transactionManager, queueService);
+        super(queueService);
         this.jpaDriverService = jpaDriverService;
         this.jpaRaceService = jpaRaceService;
         this.inputDocumentRepository = inputDocumentRepository;
@@ -55,20 +51,28 @@ public class ESDataService extends AbstractDataService {
         this.searchOperations = searchOperations;
     }
 
-    void processTeam(EntityMessage message) {
-        log.debug("processTeam : {}", message);
+    void processTeam(EntityMessages message) {
+        log.debug("processTeam : {}", message.messages().size());
     }
 
-    void processDriver(EntityMessage message) {
-        log.debug("processDriver : {}", message);
-        Optional<Data_Driver> driver = jpaDriverService.findById(message.id());
-        driver.ifPresent(e -> outputDocumentRepository.save(outputMapper.from_Data_to_E(e)));
+    void processDriver(EntityMessages message) {
+        List<E_OutputDocument> docs = message.messages().stream()
+                .map(msg -> jpaDriverService.findById(msg.id()))
+                .filter(Optional::isPresent)
+                .map(Optional::get)
+                .map(outputMapper::from_Data_to_E)
+                .toList();
+        outputDocumentRepository.saveAll(docs);
     }
 
-    void processRace(EntityMessage message) {
-        log.debug("processRace : {}", message);
-        Optional<Data_Race> race = jpaRaceService.findById(message.id());
-        race.ifPresent(r -> inputDocumentRepository.save(inputMapper.from_Data_to_E(r)));
+    void processRace(EntityMessages message) {
+        List<E_InputDocument> docs = message.messages().stream()
+                .map(msg -> jpaRaceService.findById(msg.id()))
+                .filter(Optional::isPresent)
+                .map(Optional::get)
+                .map(inputMapper::from_Data_to_E)
+                .toList();
+        inputDocumentRepository.saveAll(docs);
     }
 
     @Override

@@ -3,25 +3,22 @@ package com.btb.odj.service;
 import com.btb.odj.model.Data_Driver;
 import com.btb.odj.model.Data_Race;
 import com.btb.odj.model.Data_Team;
-import com.btb.odj.service.messages.EntityMessage;
+import com.btb.odj.service.messages.EntityMessages;
+
 import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.jms.annotation.JmsListener;
 import org.springframework.jms.support.JmsHeaders;
 import org.springframework.messaging.handler.annotation.Header;
-import org.springframework.transaction.PlatformTransactionManager;
-import org.springframework.transaction.support.TransactionTemplate;
+import org.springframework.transaction.annotation.Transactional;
 
 @Slf4j
 abstract class AbstractDataService {
 
     private final QueueService queueService;
-    private final TransactionTemplate readOnlyTemplate;
 
-    AbstractDataService(PlatformTransactionManager transactionManager, QueueService queueService) {
+    AbstractDataService(QueueService queueService) {
         this.queueService = queueService;
-        this.readOnlyTemplate = new TransactionTemplate(transactionManager);
-        this.readOnlyTemplate.setReadOnly(true);
     }
 
     /**
@@ -31,9 +28,10 @@ abstract class AbstractDataService {
             destination = "#{queueConfiguration.getUpdateDataTopic()}",
             containerFactory = "topicConnectionFactory",
             concurrency = "1")
-    void processMessage(EntityMessage message, @Header(JmsHeaders.MESSAGE_ID) String messageId) {
+    @Transactional
+    public void processMessage(EntityMessages message, @Header(JmsHeaders.MESSAGE_ID) String messageId) {
         try {
-            readOnlyTemplate.executeWithoutResult(status -> process(message));
+            process(message);
         } catch (Exception ex) {
             log.error("Exception", ex);
         } finally {
@@ -41,7 +39,7 @@ abstract class AbstractDataService {
         }
     }
 
-    private void process(final EntityMessage message) {
+    private void process(final EntityMessages message) {
         if (message.type().equals(Data_Driver.class)) {
             processDriver(message);
         } else if (message.type().equals(Data_Team.class)) {
@@ -53,11 +51,11 @@ abstract class AbstractDataService {
         }
     }
 
-    abstract void processTeam(EntityMessage message);
+    abstract void processTeam(EntityMessages message);
 
-    abstract void processDriver(EntityMessage message);
+    abstract void processDriver(EntityMessages message);
 
-    abstract void processRace(EntityMessage message);
+    abstract void processRace(EntityMessages message);
 
     abstract List<?> findDriversWithMoreThan(int points);
 }
