@@ -4,7 +4,6 @@ import com.btb.odj.model.Data_Driver;
 import com.btb.odj.model.Data_Race;
 import com.btb.odj.model.Data_Team;
 import com.btb.odj.service.messages.EntityMessages;
-
 import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.jms.annotation.JmsListener;
