@@ -1,7 +1,7 @@
 # Oracle Dual JSON
 Explore relational databases through the unique lens of JSON/NoSQL with this demonstrator, 
 integrating views from [ElasticSearch](https://www.elastic.co/), [MongoDB](https://www.mongodb.com/), 
-and [Oracle 23c](https://www.oracle.com/database/free/) using [Spring Boot](https://spring.io/projects/spring-boot/). 
+and [Oracle 23](https://www.oracle.com/database/free/) using [Spring Boot](https://spring.io/projects/spring-boot/). 
 We examine the performance implications of storing an entire data model as a JSON structure in a single table or document.
 
 ## System Overview
@@ -43,8 +43,6 @@ Use the Docker Compose script to start the application (in the environments/dock
 | JMS management                                           | http://localhost:8161                                | username/password: CNL/CNL                                       |
 | [MongoDB viewer](https://hub.docker.com/_/mongo-express) | http://localhost:8081                                | username/password: admin/pass                                    | 
 | ElasticSearch Viewer                                     | https://elasticvue.com/                              | install it as browser plugin                                     |
-| MetricsVisualisation [Grafana](https://grafana.com/)     | http://localhost:3000/                               | username/password: admin/admin                                   |
-| Metrics server [Prometheus](https://prometheus.io/)      | http://localhost:9090/                               |                                                                  |                                
 
 ## Configuration
 Modify application parameters via [Spring](https://docs.spring.io/spring-boot/docs/current/reference/html/features.html#features.external-config).
@@ -85,9 +83,9 @@ exceptions, as if no real seperated transaction was created. Not clear how to so
 (which seems to work).
 
 ### JSON Relation Duality
-Attempts to use Oracle 23c's 'JSON Relational Duality' faced 4Kb record limitations. This led to a shift towards a JSON table/document model.
+Attempts to use Oracle 23's 'JSON Relational Duality' faced a 4Kb record limitations. This led to a shift towards a JSON table/document model.
 
-## Useful Oracle 23c JSON Queries
+## Useful Oracle 23 JSON Queries
 
 ### Show Data in JSON format
 To show all driver data in JSON format with an extra 'type' field:

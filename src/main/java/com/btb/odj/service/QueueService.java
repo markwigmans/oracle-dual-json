@@ -22,7 +22,7 @@ public class QueueService {
         entities.forEach(this::sendUpdateMessage);
     }
 
-    public void sendUpdateMessage(Data_AbstractEntity entity) {
+    void sendUpdateMessage(Data_AbstractEntity entity) {
         try {
             EntityMessage message =
                     new EntityMessage(entity.getClass(), entity.getId().toString());

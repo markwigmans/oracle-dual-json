@@ -23,13 +23,11 @@ services:
     image: container-registry.oracle.com/database/free:latest
     volumes:
       - ./db/startup:/opt/oracle/scripts/startup
-    environment:
-      ORACLE_PWD: oracle
     ports:
       - "1521:1521"
 
   mq:
-    image: quay.io/artemiscloud/activemq-artemis-broker:artemis.2.31.2
+    image: quay.io/artemiscloud/activemq-artemis-broker:artemis.2.35.0
     ports:
       - "8161:8161"
       - "61616:61616"
@@ -52,25 +50,9 @@ services:
     restart: unless-stopped
 
   es:
-    image: elasticsearch:8.11.3
+    image: elasticsearch:8.14.3
     ports:
       - "9200:9200"
-      - "9300:9300"
     environment:
       discovery.type: single-node
       xpack.security.enabled: false
-
-  prometheus:
-    image: prom/prometheus:v2.45.3
-    ports:
-      - "9090:9090"
-    volumes:
-      - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
-
-  grafana:
-    image: grafana/grafana:10.3.1
-    ports:
-      - "3000:3000"
-    restart: unless-stopped
-    volumes:
-      - ./grafana/datasources:/etc/grafana/provisioning/datasources

@@ -17,7 +17,6 @@ import com.btb.odj.service.provider.ProviderCondition;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
-import io.micrometer.core.annotation.Timed;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.Query;
 import java.util.List;
