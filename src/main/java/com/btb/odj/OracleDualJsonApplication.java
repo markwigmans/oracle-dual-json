@@ -6,7 +6,6 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.context.event.ApplicationStartedEvent;
 import org.springframework.boot.info.GitProperties;
-import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.event.EventListener;
 import org.springframework.data.elasticsearch.repository.config.EnableElasticsearchRepositories;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
@@ -16,7 +15,6 @@ import org.springframework.data.mongodb.repository.config.EnableMongoRepositorie
 @EnableJpaRepositories(basePackages = "com.btb.odj.repository.jpa")
 @EnableMongoRepositories(basePackages = "com.btb.odj.repository.mongodb")
 @EnableElasticsearchRepositories(basePackages = "com.btb.odj.repository.elasticsearch")
-@EnableCaching
 @Slf4j
 @RequiredArgsConstructor
 public class OracleDualJsonApplication {

@@ -10,7 +10,7 @@ services:
       SPRING_DATASOURCE_URL: "jdbc:oracle:thin:@db:1521/freepdb1"
       SPRING_ELASTICSEARCH_URIS: "http://es:9200"
       SPRING_ARTEMIS_BROKER-URL: "tcp://mq:61616"
-      SPRING_DATA_MONGODB_URI: "mongodb://mongo/test"
+      SPRING_DATA_MONGODB_URI: "mongodb://mongo/race"
       ODJ_DB_PROVIDERS: es,mongo,jpa
     depends_on:
       - db
@@ -56,3 +56,15 @@ services:
     environment:
       discovery.type: single-node
       xpack.security.enabled: false
+
+  redis:
+    image: eqalpha/keydb
+    restart: always
+    ports:
+      - "6379:6379"
+
+  redis-gui:
+    image: redislabs/redisinsight:latest
+    restart: always
+    ports:
+      - "5540:5540"

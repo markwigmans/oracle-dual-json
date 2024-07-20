@@ -1,15 +1,18 @@
 package com.btb.odj.model;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.OneToMany;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import java.util.List;
 import lombok.*;
 import org.apache.commons.lang3.builder.ToStringExclude;
 import org.hibernate.annotations.BatchSize;
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
+import org.hibernate.annotations.Immutable;
 
 @Entity
+@Immutable
+@Cacheable
+@Cache(usage = CacheConcurrencyStrategy.READ_ONLY)
 @Table(name = "Team")
 @Builder
 @EqualsAndHashCode(onlyExplicitlyIncluded = true, callSuper = true)
@@ -32,5 +35,6 @@ public class Data_Team extends Data_AbstractEntity {
     @OneToMany(mappedBy = "team")
     @ToStringExclude
     @BatchSize(size = 10)
+    @Cache(usage = CacheConcurrencyStrategy.READ_ONLY)
     private List<Data_Driver> drivers;
 }

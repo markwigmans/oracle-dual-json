@@ -1,6 +1,5 @@
 package com.btb.odj.service;
 
-import static com.btb.odj.config.CacheConfig.CACHE_RACES;
 import static java.util.Optional.empty;
 import static java.util.Optional.ofNullable;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -51,6 +50,6 @@ class DataRaceServiceTest {
     }
 
     private Optional<Data_Race> getCached(String id) {
-        return ofNullable(cacheManager.getCache(CACHE_RACES)).map(c -> c.get(id, Data_Race.class));
+        return ofNullable(cacheManager.getCache("Race")).map(c -> c.get(id, Data_Race.class));
     }
 }

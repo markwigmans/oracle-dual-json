@@ -1,14 +1,10 @@
-
 #
 # Management
 #
 management.endpoints.web.exposure.include: "*"
 management.endpoints.web.exposure.exclude: "env,beans"
 
-management:
-  metrics:
-    tags:
-      application: ${spring.application.name}
+management.metrics.tags.application: ${spring.application.name}
 
 #================================================
 # Database Configurations
@@ -17,6 +13,11 @@ spring.jpa.hibernate.ddl-auto: update
 spring.datasource.url: jdbc:oracle:thin:@localhost:1521/freepdb1
 spring.datasource.username: RACE
 spring.datasource.password: RACE
+
+spring.jpa.properties.hibernate.cache.use_second_level_cache: true
+spring.jpa.properties.hibernate.cache.region.factory_class: org.redisson.hibernate.RedissonRegionFactory
+spring.jpa.properties.hibernate.cache.use_query_cache: true
+spring.jpa.properties.hibernate.cache.redisson.config: redisson.yaml
 
 spring:
   artemis:
@@ -27,8 +28,8 @@ spring:
     name: oracle-dual-json
 
 # Log JPA SQL requests
-#spring.jpa.properties.hibernate.format_sql: true
-#logging.level.org.hibernate.SQL: DEBUG
+spring.jpa.properties.hibernate.format_sql: true
+logging.level.org.hibernate.SQL: DEBUG
 #logging.level.org.hibernate.orm.jdbc.bind: TRACE
 #logging.file.name: race.log
 

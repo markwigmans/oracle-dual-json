@@ -1,6 +1,5 @@
 package com.btb.odj.service;
 
-import static com.btb.odj.config.CacheConfig.CACHE_DRIVERS;
 import static java.util.Optional.empty;
 import static java.util.Optional.ofNullable;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -51,6 +50,6 @@ class DataDriverServiceTest {
     }
 
     private Optional<Data_Driver> getCached(String id) {
-        return ofNullable(cacheManager.getCache(CACHE_DRIVERS)).map(c -> c.get(id, Data_Driver.class));
+        return ofNullable(cacheManager.getCache("Driver")).map(c -> c.get(id, Data_Driver.class));
     }
 }
