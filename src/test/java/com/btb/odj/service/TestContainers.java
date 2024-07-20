@@ -1,14 +1,10 @@
 package com.btb.odj.service;
 
-import org.junit.jupiter.api.TestInstance;
 import org.springframework.test.context.DynamicPropertyRegistry;
-import org.springframework.test.context.DynamicPropertySource;
 import org.testcontainers.containers.GenericContainer;
 import org.testcontainers.containers.MongoDBContainer;
 import org.testcontainers.containers.OracleContainer;
 import org.testcontainers.elasticsearch.ElasticsearchContainer;
-import org.testcontainers.junit.jupiter.Container;
-import org.testcontainers.junit.jupiter.Testcontainers;
 import org.testcontainers.utility.DockerImageName;
 
 public class TestContainers {
@@ -19,8 +15,7 @@ public class TestContainers {
     public static final ElasticsearchContainer elasticsearchContainer;
 
     static {
-        oracleContainer = new OracleContainer(
-                DockerImageName.parse("gvenzl/oracle-free:23-slim-faststart")
+        oracleContainer = new OracleContainer(DockerImageName.parse("gvenzl/oracle-free:23-slim-faststart")
                         .asCompatibleSubstituteFor("gvenzl/oracle-xe"))
                 .withDatabaseName("FREEPDB1")
                 .withUsername("testuser")
@@ -28,8 +23,7 @@ public class TestContainers {
 
         mongoDBContainer = new MongoDBContainer(DockerImageName.parse("mongo:7"));
 
-        redisContainer = new GenericContainer<>(DockerImageName.parse("redis:7"))
-                .withExposedPorts(6379);
+        redisContainer = new GenericContainer<>(DockerImageName.parse("redis:7")).withExposedPorts(6379);
 
         elasticsearchContainer = new ElasticsearchContainer(
                 DockerImageName.parse("docker.elastic.co/elasticsearch/elasticsearch:7.17.9"));
@@ -59,4 +53,3 @@ public class TestContainers {
         registry.add("spring.elasticsearch.uris", elasticsearchContainer::getHttpHostAddress);
     }
 }
-
