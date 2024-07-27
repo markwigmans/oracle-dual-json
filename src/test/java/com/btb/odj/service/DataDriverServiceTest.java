@@ -1,26 +1,20 @@
 package com.btb.odj.service;
 
-import static com.btb.odj.config.CacheConfig.CACHE_DRIVERS;
 import static java.util.Optional.empty;
-import static java.util.Optional.ofNullable;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import com.btb.odj.model.Data_Driver;
 import com.btb.odj.repository.jpa.DataDriverRepository;
 import java.util.Optional;
 import java.util.UUID;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.cache.CacheManager;
+import org.springframework.context.annotation.Import;
 
 @SpringBootTest
-@Disabled
+@Import(TestContainersConfig.class)
 class DataDriverServiceTest {
-
-    @Autowired
-    CacheManager cacheManager;
 
     @Autowired
     DataDriverRepository repository;
@@ -31,9 +25,9 @@ class DataDriverServiceTest {
     @Test
     void findByIdString() {
         Data_Driver test = repository.save(Data_Driver.builder().name("test").build());
-        String id = test.getId().toString();
-        Optional<Data_Driver> byId = service.findById(id);
-        assertEquals(byId, getCached(id));
+        UUID id = test.getId();
+        Optional<Data_Driver> byId = service.findById(id.toString());
+        assertEquals(byId.get().getId(), id);
     }
 
     @Test
@@ -41,16 +35,14 @@ class DataDriverServiceTest {
         Data_Driver test = repository.save(Data_Driver.builder().name("test").build());
         UUID id = test.getId();
         Optional<Data_Driver> byId = service.findById(id);
-        assertEquals(byId, getCached(id.toString()));
+        assertEquals(byId.get().getId(), id);
     }
 
     @Test
     void findByIdUUIDUnknown() {
-        repository.save(Data_Driver.builder().name("test").build());
-        assertEquals(empty(), getCached("unknown"));
-    }
-
-    private Optional<Data_Driver> getCached(String id) {
-        return ofNullable(cacheManager.getCache(CACHE_DRIVERS)).map(c -> c.get(id, Data_Driver.class));
+        Data_Driver test = repository.save(Data_Driver.builder().name("test").build());
+        UUID id = test.getId();
+        Optional<Data_Driver> byId = service.findById(UUID.randomUUID());
+        assertEquals(empty(), byId);
     }
 }
