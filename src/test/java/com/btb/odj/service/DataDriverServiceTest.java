@@ -10,12 +10,10 @@ import java.util.UUID;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.DynamicPropertyRegistry;
-import org.springframework.test.context.DynamicPropertySource;
-import org.testcontainers.junit.jupiter.Testcontainers;
+import org.springframework.context.annotation.Import;
 
 @SpringBootTest
-@Testcontainers
+@Import(TestContainersConfig.class)
 class DataDriverServiceTest {
 
     @Autowired
@@ -23,11 +21,6 @@ class DataDriverServiceTest {
 
     @Autowired
     DataDriverService service;
-
-    @DynamicPropertySource
-    static void registerProperties(DynamicPropertyRegistry registry) {
-        TestContainers.registerProperties(registry);
-    }
 
     @Test
     void findByIdString() {
